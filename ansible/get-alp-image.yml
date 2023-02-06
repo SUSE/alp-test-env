@@ -1,0 +1,5 @@
+---
+
+- hosts: localhost
+  roles:
+    - get_alp_image

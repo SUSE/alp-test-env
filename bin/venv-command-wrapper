@@ -1,0 +1,16 @@
+#!/bin/bash -eu
+
+#cmd_name="$(basename "${BASH_SOURCE[0]}")"
+#cmd_dir="$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")"
+
+# source library of common code
+. "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")/lib.bash"
+
+# prepend venv in directory to path if it exists
+if [[ -d "${venv_bin}" ]]; then
+    PATH="${venv_bin}:${PATH}"
+fi
+
+exec "${cmd_name}" "${@}"
+
+# vim:shiftwidth=4:tabstop=4:expandtab

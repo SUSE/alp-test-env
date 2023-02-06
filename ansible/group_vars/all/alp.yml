@@ -1,0 +1,7 @@
+---
+
+alp:
+  download:
+    build_url: https://download.opensuse.org/repositories/SUSE:/ALP/images/
+    publish_url: https://download.opensuse.org/repositories/SUSE:/ALP:/PUBLISH/images/
+  cache: ~/.cache/alp/images

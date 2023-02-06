@@ -1,0 +1,129 @@
+#!/bin/bash -eu
+
+# source library of common code
+. "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")/lib.bash"
+
+# is libvirt support required?
+libvirt_required="${ANSIBLE_LIBVIRT_REQUIRED:-true}"
+
+# list of possible python commands to use, with python3 at the end
+python_cmds=(
+    python3.12
+    python3.11
+    python3.10
+    python3.9
+    python3.8
+    # this should exist on a modern system
+    python3
+    # fall back to using python2 if acceptable python3 not found
+    python2
+)
+
+# check to see which of the possible python command exists, in
+# preferred order, selecting first that exists, validly reports
+# a version, and (if required) has libvirt available.
+python_cmd=""
+for pc in ${python_cmds[@]}
+do
+    # skip if python version not found
+    which ${pc} 2>/dev/null 1>&2 || continue
+
+    # skip if found command --version fails, e.g. a pyenv shim
+    ${pc} --version 2>/dev/null 1>&2 || continue
+
+    if [[ "${libvirt_required}" == true ]]; then
+        # make sure libvirt module is available
+        ${pc} -c 'import libvirt' 2>/dev/null 1>&2 || continue
+    fi
+
+    # skip Python 3.4 and let it fall back on Python 2.7
+    case "$(${pc} --version)" in
+    ("Python 3.4.*")
+        continue
+        ;;
+    esac
+
+    # found a viable python command
+    python_cmd="${pc}"
+    break
+done
+
+# fail if no appropriate python version was found
+if [[ -n "${python_cmd}" ]]
+then
+    echo "Selected '${python_cmd}' as the Python version to use."
+else
+    echo "ERROR: Failed to find a compatible Python3 interpreter with libvirt support."
+    echo "       Make sure your system libvirt-python package is installed."
+    exit 1
+fi
+
+venv_cmds=(
+    # then try using the discovered python command's venv module
+    "${python_cmd} -m venv"
+
+    # look for virtualenv command first
+    virtualenv
+)
+
+venv_cmd=""
+for vc in "${venv_cmds[@]}"
+do
+    if ${vc} --help 1>/dev/null 2>&1
+    then
+        venv_cmd="${vc}"
+        break
+    fi
+done
+
+if [[ -n "${venv_cmd}" ]]
+then
+    echo "Using '${venv_cmd}' to create the Python virtual environment."
+else
+    echo "ERROR: Failed to find a command that can create Python virtual"
+         "       environments. Please ensure that either the 'venv' module"
+         "       is available in your Python system environment or that"
+         "       the 'virtualenv' command is available."
+         "       NOTE: On SLE 12 systems you may need to add the Cloud:Tools"
+         "       repository from OBS to be able to install 'virtualenv'."
+    exit 1
+fi
+
+# Construct array of arguments to be passed to the venv creation command
+venv_opts=()
+
+if [[ "${libvirt_required}" == true ]]; then
+    # Need to include the --system-site-packages option to provide access
+    # to the host system's libvirt module, if required
+    venv_opts+=(
+        --system-site-packages
+    )
+fi
+
+# If using virtualenv then set the Python version to be used in the
+# created virtualenv to the one discovered earlier.
+case "${venv_cmd}" in
+(virtualenv)
+    venv_opts+=(
+        --python ${python_cmd}
+    )
+    ;;
+esac
+
+# create venv if needed
+if [[ ! -d "${venv_dir}" ]]
+then
+    ${venv_cmd} "${venv_opts[@]}" "${venv_dir}"
+fi
+
+# install/update python packages
+"${venv_dir}/bin/pip" install --upgrade pip setuptools wheel -r "${venv_reqs}"
+
+# create venv-command-wrapper symlinks for the ansible* commands in venv
+for acmd in ${venv_dir}/bin/ansible*
+do
+    acmd_link="${cmd_dir}/${acmd##*/}"
+    [[ -L ${acmd_link} ]] || ln -s venv-command-wrapper ${acmd_link}
+done
+
+# vim:shiftwidth=4:tabstop=4:expandtab

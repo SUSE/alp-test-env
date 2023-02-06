@@ -1,0 +1,95 @@
+#
+# Development Environment ignorance
+#
+
+# Ignore the user maintained settings files
+/settings/*.yml
+
+# Ignore the dev-env generated files and directories
+/.fact_cache/
+/ansible.cfg
+/ansible/ansible.cfg
+/ansible/host_vars/*/identity_file.yml
+
+# Ignore symlinks created by bin/create-venv
+/bin/ansible*
+
+# Ignore local venv if it has been created
+/.*venv/
+
+#
+# pyenv
+#
+.python-version
+
+#
+# JetBrains based IDE settings ignorance
+#
+.idea/
+
+
+#
+# Ansible ignorance
+#
+# from github/gitignore/Global/Ansible.gitignore
+#
+
+*.retry
+
+
+#
+# Vagrant
+#
+# from github/gitignore/Global/Vagrant.gitignore
+#
+.vagrant/
+
+# Log files (if you are creating logs in debug mode, uncomment this)
+# *.log
+
+
+#
+# Vim ignorance
+#
+# from github/gitignore/Global/Vim.gitignore
+#
+
+# Swap
+[._]*.s[a-v][a-z]
+!*.svg  # comment out if you don't need vector files
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Session
+Session.vim
+Sessionx.vim
+
+# Temporary
+.netrwhist
+*~
+# Auto-generated tag files
+tags
+# Persistent undo
+[._]*.un~
+
+
+#
+# VSCode ignorance
+#
+# from github/gitignore/Global/VisualStudioCode.gitignore
+#
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix

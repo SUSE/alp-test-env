@@ -1,0 +1,36 @@
+---
+
+- name: Create cache dir
+  file:
+    path: "{{ alp.cache }}"
+    state: directory
+
+- name: Determine alp_image_url to download
+  set_fact:
+    alp_image_url: >-
+      {%- set _image_name_pfx = 'ALP-VM.x86_64-' ~ (alp_version | default('0.0.1')) ~ '-' ~ (alp_image_type | default('kvm')) ~ '-' -%}
+      {%- if (alp_snapshot | default('')) != '' -%}
+      {%-   set _url_base = alp.download.publish_url -%}
+      {%-   set _build_num = "Snapshot" ~ alp_snapshot -%}
+      {%- elif (alp_build | default('')) != '' -%}
+      {%-   set _url_base = alp.download.build_url -%}
+      {%-   set _build_num = "Build" ~ alp_build -%}
+      {%- else -%}
+      {%-   set _url_base = alp.download.publish_url -%}
+      {%-   set _build_num = "Snapshot20221216" -%}
+      {%- endif -%}
+      {%- set _image_name = _image_name_pfx ~ _build_num ~ ".qcow2" -%}
+      {{- _url_base ~ _image_name -}}
+
+- name: Download image to cache
+  get_url:
+    dest: "{{ alp.cache }}/{{ alp_image_url | basename }}"
+    url: "{{ alp_image_url }}"
+    checksum: "sha256:{{ alp_image_url }}.sha256"
+    mode: 0644
+  register: alp_image_download
+
+- name: Report image that was downloaded
+  debug:
+    msg: >-
+      Downloded '{{ alp_image_url | basename }}' to '{{ alp.cache }}'

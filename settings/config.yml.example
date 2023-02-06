@@ -1,0 +1,15 @@
+#
+# User configurable settings
+#
+
+# The ALP version to target
+alp_version: "0.0.1"
+
+# Choice of 'kvm' or 'kvm_encrypted'
+alp_image_type: kvm
+
+# Specify a published snapshot id, or leave blank to retrieve specific build
+alp_snapshot: 20221216
+
+# Specify a specific build or leave blank to use latest
+alp_build: 23.14
