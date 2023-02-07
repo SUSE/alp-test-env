@@ -5,10 +5,8 @@
 # Ignore the user maintained settings files
 /settings/*.yml
 
-# Ignore the dev-env generated files and directories
+# Ignore the test-env generated files and directories
 /.fact_cache/
-/ansible.cfg
-/ansible/ansible.cfg
 /ansible/host_vars/*/identity_file.yml
 
 # Ignore symlinks created by bin/create-venv
