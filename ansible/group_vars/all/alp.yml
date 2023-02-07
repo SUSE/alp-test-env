@@ -1,7 +1,16 @@
 ---
 
 alp:
-  download:
-    build_url: https://download.opensuse.org/repositories/SUSE:/ALP/images/
-    publish_url: https://download.opensuse.org/repositories/SUSE:/ALP:/PUBLISH/images/
+  image_base_urls:
+    build: https://download.opensuse.org/repositories/SUSE:/ALP/images/
+    snapshot: https://download.opensuse.org/repositories/SUSE:/ALP:/PUBLISH/images/
   cache: ~/.cache/alp/images
+  default_build_versions:
+    build:
+      prefix: "Build"
+      kvm: "23.14"
+      kvm_encrypted: "23.19"
+    snapshot:
+      prefix: "Snapshot"
+      kvm: "20221216"
+      kvm_encrypted: "20221216"

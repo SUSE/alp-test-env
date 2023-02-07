@@ -1,5 +1,7 @@
 ---
 
-- hosts: localhost
+- import_playbook: define_libvirt_host.yml
+
+- hosts: libvirt_host
   roles:
     - get_alp_image

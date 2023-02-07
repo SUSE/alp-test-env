@@ -1,15 +1,28 @@
+---
+
 #
 # User configurable settings
 #
 
 # The ALP version to target
-alp_version: "0.0.1"
+#alp_version: "0.0.1"
+
+# The ALP arch to target
+#alp_arch: 'x86_64'
 
 # Choice of 'kvm' or 'kvm_encrypted'
-alp_image_type: kvm
+#alp_image_type: kvm
 
-# Specify a published snapshot id, or leave blank to retrieve specific build
-alp_snapshot: 20221216
+# Choice of 'build' or 'snapshot'
+#alp_build_type: build
 
-# Specify a specific build or leave blank to use latest
-alp_build: 23.14
+# Override table for known ALP builds
+#alp_build_versions:
+#  build:
+#    prefix: "Build"
+#    kvm: "23.14"
+#    kvm_encrypted: "23.19"
+#  snapshot:
+#    prefix: "Snapshot"
+#    kvm: "20221216"
+#    kvm_encrypted: "20221216"
