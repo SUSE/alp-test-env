@@ -1,0 +1,13 @@
+---
+
+- import_playbook: define_libvirt_host.yml
+
+- hosts: libvirt_host
+  tasks:
+    - name: Create specified VMs
+      include_role:
+        name: alp_vm
+        tasks_from: create_vm.yml
+      loop_control:
+        loop_var: vm_config
+      loop: "{{ vm_configs }}"

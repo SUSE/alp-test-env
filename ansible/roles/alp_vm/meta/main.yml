@@ -1,0 +1,5 @@
+---
+
+dependencies:
+  - libvirt_host
+  - alp_image_details

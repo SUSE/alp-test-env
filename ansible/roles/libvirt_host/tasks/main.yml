@@ -1,0 +1,8 @@
+---
+
+- name: Ensure required packages are installed
+  become: true
+  package:
+    name: "{{ libvirt_host_required_packages }}"
+    state: present
+

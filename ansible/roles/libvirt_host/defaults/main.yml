@@ -1,0 +1,24 @@
+---
+
+_distro_family: "{{ ansible_os_family | lower }}"
+
+_libvirt_host_distros_required_packages:
+  suse:
+    pkgs:
+      - ignition
+      - libosinfo
+      - ovmf
+      - python3-lxml
+      - qemu-ovmf-x86_64
+      - swtpm
+      - virt-install
+  debian:
+    pkgs:
+      - ignition
+      - libosinfo-bin
+      - ovmf
+      - python3-lxml
+      - swtpm
+      - virtinst
+
+libvirt_host_required_packages: "{{ _libvirt_host_distros_required_packages[_distro_family].pkgs }}"

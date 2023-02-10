@@ -1,0 +1,34 @@
+---
+
+_libvirt_images: /var/lib/libvirt/images
+
+_alp_vm_name: "{{ vm_config.name | default('alptestvm') }}"
+
+_def_home_disk:
+  name: 'home'
+  size_gb: 100
+  fstype: 'xfs'
+  path: '/home'
+
+alp_vm:
+  name: "{{ _alp_vm_name }}"
+  image:
+    backing: "{{ _libvirt_images }}/{{ alp_image.name }}"
+    file: "{{ _libvirt_images }}/{{ _alp_vm_name }}"
+    size_gb: "{{ vm_config.disk_size_gb | default(100) }}"
+  ignition:
+    file: "/tmp/{{ _alp_vm_name }}.ign"
+    template: "config.ign.j2"
+  os_variant: "{{ vm_config.os_variant | default('opensusetumbleweed') }}"
+  hardware:
+    ram_mb: "{{ vm_config.ram_mb | default('4096') }}"
+    vcpus: "{{ vm_config.vcpus | default('4') }}"
+    cpu_type:  "{{ vm_config.cpu_type | default('host-passthrough') }}"
+    machine: "{{ vm_config.machine_type | default('q35') }}"
+    video: "{{ vm_config.video | default('vga') }}"
+    bus: "{{ vm_config.disk_bus | default('scsi') }}"
+  nics: "{{ vm_config.nics | default({'nettype': 'network', 'netdev': 'default'}) }}"
+  tpm:
+    version: "{{ vm_config.tpm.version | default('2.0') }}"
+    model: "{{ vm_config.tpm.model | default('tpm-tis') }}"
+  extra_disks: "{{ vm_config.extra_disks | default([_def_home_disk]) }}"

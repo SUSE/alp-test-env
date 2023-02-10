@@ -1,0 +1,74 @@
+---
+# tasks file for vm creation
+
+- include_tasks: cleanup_vm.yml
+
+- name: Install ALP VM backing image
+  become: true
+  copy:
+    src: "{{ alp_image.cached }}"
+    dest: "{{ alp_vm.image.backing }}"
+    mode: 0644
+    remote_src: true
+
+- name: Create a disk image from VM {{ alp_vm.name }}
+  become: true
+  shell: |-
+    set -eu;
+    qemu-img create -f qcow2 -F qcow2 -o backing_file={{ alp_vm.image.backing }} {{ alp_vm.image.file }};
+    qemu-img resize {{ alp_vm.image.file }} {{ alp_vm.image.size }}
+  when:
+    - false
+
+- name: Create ignition config file
+  template:
+    src: "{{ alp_vm.ignition.template }}"
+    dest: "{{ alp_vm.ignition.file }}"
+    mode: 0600
+
+# virt-install --connect qemu:///system --virt-type kvm --name {{ alp_vm.name }} --ram {{ vm_memory }} --vcpus={{ vm_vcpus }} {{ vm_os_variant }} --disk path={{ disk_image_file }},format=qcow2 --disk {{ cloud_init_image_file }},device=cdrom --import {{ vm_networking }} --graphics none --noautoconsole
+
+- name: Create VM {{ alp_vm.name }}
+  become: true 
+  command: >-
+    virt-install
+      --connect qemu:///system
+      --import
+      --name {{ alp_vm.name }}
+      --boot hd
+      --osinfo {{ alp_vm.os_variant }}
+      --virt-type kvm
+      --hvm
+      --machine {{ alp_vm.hardware.machine }}
+      --ram {{ alp_vm.hardware.ram_mb }}
+      --vcpus {{ alp_vm.hardware.vcpus }}
+      --cpu {{ alp_vm.hardware.cpu_type }}
+      --video {{ alp_vm.hardware.video }}
+      --console pty,target_type=virtio
+      --graphics vnc,listen=0.0.0.0
+      --rng /dev/urandom
+    {% if alp_vm.hardware.bus == 'scsi' %}
+      --controller type=scsi,model=virtio-scsi
+    {% endif %}
+    {% for _net in alp_vm.nics %}
+    {%   set _netparams = [_net.nettype ~ '=' ~ _net.netdev] %}
+    {%   if _net.mac is defined %}
+    {%     set _ = _netparams.append('mac=' ~ _net.mac) %}
+    {%   endif %}
+      --network {{ _netparams | join(',') }}
+    {% endfor %}
+    {% if false %}
+      --network network=default
+    {% endif %}
+      --tpm backend.type=emulator,backend.version={{ alp_vm.tpm.version }},model={{ alp_vm.tpm.model }}
+      --sysinfo type=fwcfg,entry0.name="opt/com.coreos/config",entry0.file="{{ alp_vm.ignition.file}}"
+      --disk path={{ alp_vm.image.file }},size={{ alp_vm.image.size_gb }},backing_store={{ alp_vm.image.backing }},backing_format=qcow2,bus={{ alp_vm.hardware.bus }},cache=none
+    {% for _disk in alp_vm.extra_disks %}
+      --disk path={{ alp_vm.image.file | replace(alp_vm.name, alp_vm.name ~ '_' ~ _disk.name) }},size={{ _disk.size_gb | default(100) }},bus={{ alp_vm.hardware.bus }},cache=none
+    {% endfor %}
+      --noautoconsole
+  register: virt_install_result
+
+- name: Print create VM result
+  debug:
+    var: virt_install_result

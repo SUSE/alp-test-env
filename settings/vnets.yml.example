@@ -1,0 +1,58 @@
+---
+
+#
+# Specify list of Libvirt Networks to be managed
+#
+# It is recommended to have at least one network be DHCP enabled,
+# called 'alpmgmnt' as in the example below, which can be used
+# to manage the VMs once they have been created. To simplify
+# determining the IP address of the VMs its is recommended that
+# you define mac and ip values for the VM nics on the alpmgmt
+# network so that DHCP static reservations can be defined for
+# the VM nic.
+#
+
+vnet_configs:
+
+#  - name: alpnet1
+#    forward_mode: nat
+#    bridge: virbr1
+#    mac: 52:54:00:A1:00:00
+#    cidr: 192.168.181.0/24
+
+#  - name: alpnet2
+#    forward_mode: nat
+#    bridge: virbr2
+#    mac: 52:54:00:A2:00:00
+#    cidr: 192.168.182.0/24
+
+#  - name: alpnet3
+#    forward_mode: nat
+#    bridge: virbr3
+#    mac: 52:54:00:A3:00:00
+#    cidr: 192.168.183.0/24
+
+#  - name: alpnet4
+#    forward_mode: nat
+#    bridge: virbr4
+#    mac: 52:54:00:A4:00:00
+#    cidr: 192.168.184.0/24
+
+#  - name: alpnet5
+#    forward_mode: nat
+#    bridge: virbr5
+#    mac: 52:54:00:A5:00:00
+#    cidr: 192.168.185.0/24
+
+#  - name: alpnet6
+#    forward_mode: nat
+#    bridge: virbr6
+#    mac: 52:54:00:A6:00:00
+#    cidr: 192.168.186.0/24
+
+  - name: alpmgmt
+    forward_mode: nat
+    bridge: virbr7
+    mac: 52:54:00:A7:00:00
+    cidr: 192.168.187.0/24
+    dhcp: true

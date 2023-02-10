@@ -1,0 +1,5 @@
+---
+
+- import_playbook: define_libvirt_host.yml
+- import_playbook: cleanup_alp_vms.yml
+- import_playbook: cleanup_alp_vnets.yml

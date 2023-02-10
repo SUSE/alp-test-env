@@ -1,0 +1,36 @@
+{%- set _ssh_keys = [] -%}
+{%- if ssh_pub_keys is defined -%}
+{%-   for _kf in ssh_pub_keys.files | default([]) -%}
+{%-     set _kfc = lookup('file', _kf) -%}
+{%-     set _ = _ssh_keys.append(_kfc) -%}
+{%-   endfor -%}
+{%-   for _kfc in ssh_pub_keys.strings | default([]) -%}
+{%-     set _ = _ssh_keys.append(_kfc) -%}
+{%-   endfor -%}
+{%- endif -%}
+{
+  "ignition": {
+    "version": "3.2.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "name": "root",
+        "passwordHash": "$2a$10$U7seU4y9O6eu21IRFxG8o.4JPEI06r0tqVC5wme6RclTnXebrpOpy",
+        "sshAuthorizedKeys": {{ _ssh_keys | sort | unique | to_json }}
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "path": "/etc/hostname",
+	"mode": 420,
+	"overwrite": true,
+	"contents": {
+	  "source": "data:text/plain;charset=utf-8;base64,{{ alp_vm.name | b64encode }}"
+	}
+      }
+    ]
+  }
+}

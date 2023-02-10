@@ -1,0 +1,30 @@
+{%- set _name = vnet_config.name -%}
+{%- set _bridge = vnet_config.bridge -%}
+{%- set _cidr = vnet_config.cidr -%}
+{%- set _fwd_mode = vnet_config.forward_mode -%}
+{%- set _mac = vnet_config.mac -%}
+{%- set _dhcp_enabled = (vnet_config.dhcp | default(false)) | bool -%}
+{%- set _fwd_start = vnet_config.forward_port_start | default(1024) -%}
+{%- set _fwd_end = vnet_config.forward_port_end | default(65535) -%}
+{%- set _host = _cidr | ansible.utils.ipaddr('1') | ansible.utils.ipaddr('address') -%}
+{%- set _netmask = _cidr | ansible.utils.ipaddr('netmask') -%}
+{%- set _dhcp_start = _cidr | ansible.utils.ipaddr('2') | ansible.utils.ipaddr('address') -%}
+{%- set _dhcp_end = _cidr | ansible.utils.ipaddr('-2') | ansible.utils.ipaddr('address') -%}
+<network>
+  <name>{{ _name }}</name>
+  <forward mode='{{ _fwd_mode }}'>
+    <nat>
+      <port start='{{ _fwd_start | default(1024) }}' end='{{ _fwd_end | default(65535) }}'/>
+    </nat>
+  </forward>
+  <bridge name='{{ _bridge }}' stp='on' delay='0'/>
+  <mac address='{{ _mac }}'/>
+  <domain name='{{ _name }}'/>
+  <ip address='{{ _host }}' netmask='{{ _netmask }}'>
+{% if _dhcp_enabled %}
+    <dhcp>
+      <range start='{{ _dhcp_start }}' end='{{ _dhcp_end }}'/>
+    </dhcp>
+{% endif %}
+  </ip>
+</network>

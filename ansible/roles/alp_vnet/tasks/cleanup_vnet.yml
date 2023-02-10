@@ -1,0 +1,37 @@
+---
+
+- name: Retrieve list of running Virtual Networks
+  community.libvirt.virt_net:
+    command: list_nets
+  register: _virt_net
+
+- name: Print found VNets if any
+  debug:
+    msg: "Currently defines VNets: {{ _virt_net.list_nets }}"
+  when:
+    - (_virt_net.list_nets | length) > 1
+
+- name: If needed cleanup VNet {{ vnet_config.name }}
+  block:
+    - name: Stop existing VNet {{ vnet_config.name }}
+      community.libvirt.virt_net:
+        command: destroy
+        name: "{{ vnet_config.name }}"
+
+    - name: Remove existing VNet {{ vnet_config.name }}
+      community.libvirt.virt_net:
+        command: undefine
+        name: "{{ vnet_config.name }}"
+
+    - name: Wait for cleanup of VNet {{ vnet_config.name }}
+      become: true
+      community.libvirt.virt_net:
+        command: list_nets
+      register: _virt_net_check
+      until:
+        - vnet_config.name not in _virt_net_check.list_nets
+      retries: 30
+      delay: 2
+
+  when:
+    - vnet_config.name in _virt_net.list_nets

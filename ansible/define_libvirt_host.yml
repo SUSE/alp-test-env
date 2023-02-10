@@ -2,6 +2,7 @@
 
 - hosts: localhost
   connection: local
+  gather_facts: false
   tasks:
     # dynamically define the libvirt_host node as either the local
     # system (the default) or a remote system when all of the appropriate

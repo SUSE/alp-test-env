@@ -1,0 +1,46 @@
+---
+
+- name: Determine list of running VMs
+  #become: true
+  community.libvirt.virt:
+    command: list_vms
+  register: _list_vms
+
+- name: Print found VMs if any
+  debug:
+    msg: "Currently defined VMs: {{ _list_vms.list_vms }}"
+  when:
+    - (_list_vms.list_vms | length) > 0
+
+- name: If needed cleanup running VM {{ alp_vm.name }}
+  block:
+    - name: If needed destroy running VM {{ alp_vm.name }}
+      #become: true
+      community.libvirt.virt:
+        name: "{{ alp_vm.name }}"
+        state: destroyed
+
+    - name: If needed undefine VM {{ alp_vm.name }}
+      #become: true
+      community.libvirt.virt:
+        name: "{{ alp_vm.name }}"
+        command: undefine
+
+    - name: Wait for cleanup of VM {{ alp_vm.name }}
+      #become: true
+      community.libvirt.virt:
+        command: list_vms
+      register: _list_vms_check
+      until:
+        - alp_vm.name not in _list_vms_check.list_vms
+      retries: 30
+      delay: 2
+
+  when:
+    - alp_vm.name in _list_vms.list_vms
+
+- name: Remove old image file for VM {{ alp_vm.name }}
+  become: true
+  file:
+    path: "{{ alp_vm.image.file }}"
+    state: absent

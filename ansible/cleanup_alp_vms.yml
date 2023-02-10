@@ -1,0 +1,13 @@
+---
+
+- import_playbook: define_libvirt_host.yml
+
+- hosts: libvirt_host
+  tasks:
+    - name: Cleanup specified VMs
+      include_role:
+        name: alp_vm
+        tasks_from: cleanup_vm.yml
+      loop_control:
+        loop_var: vm_config
+      loop: "{{ vm_configs }}"

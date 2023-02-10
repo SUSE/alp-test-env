@@ -1,0 +1,21 @@
+---
+
+- name: Gather facts about networks
+  community.libvirt.virt_net:
+    command: facts
+
+- ansible.builtin.debug: var=ansible_libvirt_networks
+
+- name: Gather info about networks
+  community.libvirt.virt_net:
+    command: info
+  register: virt_net_info
+
+- ansible.builtin.debug: var=virt_net_info
+
+- name: List networks
+  community.libvirt.virt_net:
+    command: list_nets
+  register: virt_net_list_nets
+
+- ansible.builtin.debug: var=virt_net_list_nets

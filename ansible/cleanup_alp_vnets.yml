@@ -1,0 +1,13 @@
+---
+
+- import_playbook: define_libvirt_host.yml
+
+- hosts: libvirt_host
+  tasks:
+    - name: Cleanup specified Virtual Networks
+      include_role:
+        name: alp_vnet
+        tasks_from: cleanup_vnet.yml
+      loop_control:
+        loop_var: vnet_config
+      loop: "{{ vnet_configs }}"

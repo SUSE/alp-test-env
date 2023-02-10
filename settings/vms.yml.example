@@ -1,0 +1,49 @@
+---
+
+#
+# Specify list of VMs to bring up
+#
+# Reasonable defaults are provided for most settings so potentially
+# just need to specify the relevant networks, and tweak memory and
+# cpu counts.
+#
+# Ensure any libvirt networks that you specify are either defined
+# in settings/vnets.yml or already exist on the libvirt host.
+#
+# When specifying a VM ensure that you provide a name, and the nics
+# list for network connectivity. When specifying nics for a libvirt
+# network that is DHCP enabled, you should specify a mac address and
+# an IP address so that a DHCP static address reservation can be set
+# up for the VM on that network.
+#
+# see ansible/roles/alp_vm/defaulst/main.yml for more details on
+# the default values used for anything not specified here.
+
+#vm_configs:
+#  - name: alptestvm
+#    os_variant: opensusetumbleweed
+#    disk_bus: scsi
+#    ram_mb: 4096
+#    cpu_type: host-passthrough
+#    machine_type: q35
+#    vcpus: 4
+#    video: vga
+#    disk_size_gb: 100
+#    extra_disks:
+#      - name: home
+#        size_gb: 100
+#        fstype: 'xfs'
+#        path: '/home'
+#    tpm:
+#      version: 2.0
+#      model: tpm-tis
+#    nics:
+#      - nettype: network
+#        netdev: alpmgmt
+#        mac: "52:54:00:A7:00:01"
+#        ip: "192.168.123.2"
+#      - nettype: bridge
+#        nettype: br0
+#        # Specify a MAC here and define a static reservation for this VM
+#        # in your network's DHCP config if possible.
+#        mac: "11:22:33:44:55:66"

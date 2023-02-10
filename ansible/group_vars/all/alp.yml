@@ -4,12 +4,12 @@ alp:
   image_base_urls:
     build: https://download.opensuse.org/repositories/SUSE:/ALP/images/
     snapshot: https://download.opensuse.org/repositories/SUSE:/ALP:/PUBLISH/images/
-  cache: ~/.cache/alp/images
+  cache: "{{ '~/.cache/alp/images' | expanduser }}"
   default_build_versions:
     build:
       prefix: "Build"
-      kvm: "23.14"
-      kvm_encrypted: "23.19"
+      kvm: "23.15"
+      kvm_encrypted: "23.20"
     snapshot:
       prefix: "Snapshot"
       kvm: "20221216"
