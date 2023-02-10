@@ -15,6 +15,10 @@ Run `bin/ansible-playbook ansible/test_env_cleanup.yml` to cleanup any
 previously created VMs and associated resources.
 
 TODO:
+  * Dynamically figure out latest Build or Snapshot image and download
+    that, exposing via a generic symlink so that VM creation workflow
+    can be agnostic of image version.
+  * Finish off support for kvm_encrypted VM type.
   * After bringing up ALP VMs mount extra disks on specified mount points
     * The default is to add an extra disk that will replace the existing
       /home subvolume.
