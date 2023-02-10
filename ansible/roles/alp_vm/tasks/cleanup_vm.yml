@@ -39,7 +39,14 @@
   when:
     - alp_vm.name in _list_vms.list_vms
 
-- name: Remove old image file for VM {{ alp_vm.name }}
+- name: Remove any extra disk for VM {{ alp_vm.name }}
+  become: true
+  file:
+    path: "{{ alp_vm.image.file | replace(alp_vm.name, alp_vm.name ~ '_' ~ item.name) }}"
+    state: absent
+  loop: "{{ alp_vm.extra_disks }}"
+
+- name: Remove image file for VM {{ alp_vm.name }}
   become: true
   file:
     path: "{{ alp_vm.image.file }}"

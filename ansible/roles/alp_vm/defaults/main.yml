@@ -14,7 +14,7 @@ alp_vm:
   name: "{{ _alp_vm_name }}"
   image:
     backing: "{{ _libvirt_images }}/{{ alp_image.name }}"
-    file: "{{ _libvirt_images }}/{{ _alp_vm_name }}"
+    file: "{{ _libvirt_images }}/{{ _alp_vm_name }}.qcow2"
     size_gb: "{{ vm_config.disk_size_gb | default(100) }}"
   ignition:
     file: "/tmp/{{ _alp_vm_name }}.ign"

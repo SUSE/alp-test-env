@@ -15,6 +15,7 @@ TODO:
   * After bringing up ALP VMs mount extra disks on specified mount points
     * The default is to add an extra disk that will replace the existing
       /home subvolume.
+  * Create test user account for remote access, rather than root account
   * Install ansible container and use it to:
     * (re-)configure networking
     * setup Libvirt via container and bring up nested VMs.

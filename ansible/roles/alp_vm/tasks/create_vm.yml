@@ -26,8 +26,6 @@
     dest: "{{ alp_vm.ignition.file }}"
     mode: 0600
 
-# virt-install --connect qemu:///system --virt-type kvm --name {{ alp_vm.name }} --ram {{ vm_memory }} --vcpus={{ vm_vcpus }} {{ vm_os_variant }} --disk path={{ disk_image_file }},format=qcow2 --disk {{ cloud_init_image_file }},device=cdrom --import {{ vm_networking }} --graphics none --noautoconsole
-
 - name: Create VM {{ alp_vm.name }}
   become: true 
   command: >-
@@ -69,6 +67,6 @@
       --noautoconsole
   register: virt_install_result
 
-- name: Print create VM result
+- name: Show results for creation of VM {{ alp_vm.name }}
   debug:
     var: virt_install_result
