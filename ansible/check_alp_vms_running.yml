@@ -1,0 +1,28 @@
+---
+
+- import_playbook: define_libvirt_host.yml
+- import_playbook: define_alp_vms_group.yml
+
+- hosts: alp_vms
+  gather_facts: false
+  tasks:
+
+    - name: Wait for ALP VM IPs to be pingable
+      delegate_to: libvirt_host
+      command: >-
+        ping -c 1 -W 0.1 {{ ansible_ssh_host | default(ansible_host) }}
+      register: ping_cmd
+      until:
+        - ping_cmd is success
+      retries: 30
+      delay: 2
+
+    - name: Wait for SSH on ALP VMs to be responding
+      delegate_to: libvirt_host
+      ansible.builtin.wait_for:
+        port: 22
+        host: "{{ ansible_ssh_host | default(ansible_host) }}"
+        search_regex: OpenSSH
+
+    - name: Check that ALP VMs are available
+      ping:

@@ -60,9 +60,9 @@
     {% endif %}
       --tpm backend.type=emulator,backend.version={{ alp_vm.tpm.version }},model={{ alp_vm.tpm.model }}
       --sysinfo type=fwcfg,entry0.name="opt/com.coreos/config",entry0.file="{{ alp_vm.ignition.file}}"
-      --disk path={{ alp_vm.image.file }},size={{ alp_vm.image.size_gb }},backing_store={{ alp_vm.image.backing }},backing_format=qcow2,bus={{ alp_vm.hardware.bus }},cache=none
+      --disk path={{ alp_vm.image.file }},size={{ alp_vm.image.size_gb }},backing_store={{ alp_vm.image.backing }},backing_format=qcow2,bus={{ alp_vm.hardware.bus }},cache=none,serial={{ 'ALP-' ~ (alp_vm.name[0:15] | upper) }}
     {% for _disk in alp_vm.extra_disks %}
-      --disk path={{ alp_vm.image.file | replace(alp_vm.name, alp_vm.name ~ '_' ~ _disk.name) }},size={{ _disk.size_gb | default(100) }},bus={{ alp_vm.hardware.bus }},cache=none
+      --disk path={{ alp_vm.image.file | replace(alp_vm.name, alp_vm.name ~ '_' ~ _disk.name) }},size={{ _disk.size_gb | default(100) }},bus={{ alp_vm.hardware.bus }},cache=none,serial={{ 'ALP-' ~ (_disk.name[0:15] | upper) }}
     {% endfor %}
       --noautoconsole
   register: virt_install_result

@@ -1,14 +1,42 @@
 ---
 
 #
+# VM Management Libvirt Network
+#
+# This libvirt network is used to manage the created ALP VMs by dynamically
+# creating an Ansible host group (alp_vms) using the IP address associated
+# with the management network's NIC.
+#
+# NOTE: The specified libvirt network should be DHCP enabled to ensure that
+# the IP addresses have been automatically assigned to the NICs when the
+# VMs are provisioned.
+#
+
+#vm_mgmt_net: alpmgmt
+
+#
+# VM Management User
+#
+# This user account will be created and granted sudo privileges if needed
+#
+#vm_mgmt_user: testenv
+
+#
+# VM Management Python
+#
+# The Python binary to use for remote management of VMs
+#
+#vm_mgmt_python: /usr/bin/python3
+
+#
 # Specify list of VMs to bring up
 #
-# Reasonable defaults are provided for most settings so potentially
-# just need to specify the relevant networks, and tweak memory and
+# Reasonable defaults are provided for most settings so potentially all
+# that is needed to specify the relevant networks, and tweak memory and
 # cpu counts.
 #
-# Ensure any libvirt networks that you specify are either defined
-# in settings/vnets.yml or already exist on the libvirt host.
+# Ensure any libvirt networks that you specify are either defined in
+# settings/vnets.yml or already exist on the libvirt host.
 #
 # When specifying a VM ensure that you provide a name, and the nics
 # list for network connectivity. When specifying nics for a libvirt
@@ -16,11 +44,13 @@
 # an IP address so that a DHCP static address reservation can be set
 # up for the VM on that network.
 #
-# see ansible/roles/alp_vm/defaulst/main.yml for more details on
+# See ansible/roles/alp_vm/defaults/main.yml for more details on
 # the default values used for anything not specified here.
+#
 
-#vm_configs:
-#  - name: alptestvm
+vm_configs:
+
+  - name: alptestvm
 #    os_variant: opensusetumbleweed
 #    disk_bus: scsi
 #    ram_mb: 4096
@@ -30,18 +60,54 @@
 #    video: vga
 #    disk_size_gb: 100
 #    extra_disks:
-#      - name: home
+#      - name: scratch
 #        size_gb: 100
-#        fstype: 'xfs'
-#        path: '/home'
+#        fstype: 'btrfs'
+#        path: '/srv/scratch'
 #    tpm:
 #      version: 2.0
 #      model: tpm-tis
 #    nics:
+
+#      # define 6 networks that won't be automatically configured
 #      - nettype: network
 #        netdev: alpmgmt
-#        mac: "52:54:00:A7:00:01"
-#        ip: "192.168.123.2"
+#        mac: "52:54:00:A1:00:01"
+#        ip: "192.168.181.2"
+
+#      - nettype: network
+#        netdev: alpmgmt
+#        mac: "52:54:00:A2:00:01"
+#        ip: "192.168.182.2"
+
+#      - nettype: network
+#        netdev: alpmgmt
+#        mac: "52:54:00:A3:00:01"
+#        ip: "192.168.183.2"
+
+#      - nettype: network
+#        netdev: alpmgmt
+#        mac: "52:54:00:A4:00:01"
+#        ip: "192.168.184.2"
+
+#      - nettype: network
+#        netdev: alpmgmt
+#        mac: "52:54:00:A5:00:01"
+#        ip: "192.168.185.2"
+
+#      - nettype: network
+#        netdev: alpmgmt
+#        mac: "52:54:00:A6:00:01"
+#        ip: "192.168.186.2"
+
+      # This will be the network used to manage the VMs
+      - nettype: network
+        netdev: alpmgmt
+        mac: "52:54:00:A7:00:01"
+        ip: "192.168.187.2"
+
+#      # Only configure this if you have a bridged network you want to be
+#      # able to access the VMs via
 #      - nettype: bridge
 #        nettype: br0
 #        # Specify a MAC here and define a static reservation for this VM

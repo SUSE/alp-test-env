@@ -1,0 +1,66 @@
+---
+
+#
+# Dynamically define the alp_vms group based upon settings/vms.yml
+# VM configuration.
+#
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Determine management network details for ALP VMs
+      set_fact:
+        managed_vms: >-
+          {%- set _managed_vms = [] -%}
+          {%- for _vm in vm_configs -%}
+          {%-   set _mgmt_nics = _vm.nics | selectattr('nettype', 'eq', 'network') | selectattr('netdev', 'eq', vm_mgmt_net | default('alpmgmt')) | list -%}
+          {%-   if _mgmt_nics | length -%}
+          {%-     set _ = _managed_vms.append({'name': _vm.name, 'ip': (_mgmt_nics | first).ip }) -%}
+          {%-   endif -%}
+          {%- endfor -%}
+          {{- _managed_vms -}}
+
+    - name: Fail if no viable ALP VMs were detected
+      ansible.builtin.fail:
+        msg: |-
+          No viable ALP VM definitions detected.
+          Ensure that each VM specified by vm_configs in settings/vms.yml has
+          a NIC entry associated with the specified management network.
+      when:
+        - (managed_vms | length) == 0
+
+    # Dynamically define ALP VMs as Ansible inventory hosts in the alp_vms
+    # group, either directly accessible from the local host, or proxying
+    # via the specified libvirt host.
+    - name: Add Remotely accessible ALP VMs
+      ansible.builtin.add_host:
+        name: "{{ item.name }}"
+        hostname: "{{ item.name }}"
+        ansible_user: "{{ vm_mgmt_user | default('testenv') }}"
+        ansible_host: "{{ item.ip }}"
+        ansible_python_interpreter: "{{ vm_mgmt_python | default('/usr/bin/python3') }}"
+        ansible_ssh_common_args: >-
+          -o ProxyCommand='ssh -W %h:%p {{ libvirt_host_ip }}'
+          -o UserKnownHostsFile=/dev/null
+        groups:
+          - alp_vms
+      loop: "{{ managed_vms }}"
+      changed_when: false
+      when:
+        - (libvirt_host_type | default('local')) == 'remote'
+      register: define_remote_alp_vms
+
+    - name: Add locally accessible ALP VMs
+      ansible.builtin.add_host:
+        name: "{{ item.name }}"
+        hostname: "{{ item.name }}"
+        ansible_user: "{{ vm_mgmt_user | default('testenv') }}"
+        ansible_host: "{{ item.ip }}"
+        ansible_python_interpreter: "{{ vm_mgmt_python | default('/usr/bin/python3') }}"
+        groups:
+          - alp_vms
+      loop: "{{ managed_vms }}"
+      when:
+        - define_remote_alp_vms is skipped
+      changed_when: false

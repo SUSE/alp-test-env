@@ -11,6 +11,11 @@
 # network so that DHCP static reservations can be defined for
 # the VM nic.
 #
+# NOTE: If existing Libvirt networks are using the specified
+# virbrX bridges you will need to either change the virbrX
+# values appropriately, or else remove the existing Libvirt
+# networks.
+#
 
 vnet_configs:
 

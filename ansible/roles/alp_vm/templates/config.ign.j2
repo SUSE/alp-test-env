@@ -16,12 +16,30 @@
     "users": [
       {
         "name": "root",
-        "passwordHash": "$2a$10$U7seU4y9O6eu21IRFxG8o.4JPEI06r0tqVC5wme6RclTnXebrpOpy",
+	{# Password is '{AlpTestEnv2023}' #}
+        "passwordHash": "$2a$10$8cSI2wefsk.R4ekovBNGsOsP4HksJpdr2vxYQc37.VmIotkkO0uW6",
+        "sshAuthorizedKeys": {{ _ssh_keys | sort | unique | to_json }}
+      },
+      {
+        "name": "testenv",
+	{# Password is '{AlpTestEnv2023}' #}
+        "passwordHash": "$2a$10$z82/skiiqLBu.eAvXEHy2.lZLGJscUkAdmE4NRUqGqHHYP0.3DJmi",
         "sshAuthorizedKeys": {{ _ssh_keys | sort | unique | to_json }}
       }
     ]
   },
   "storage": {
+    "filesystems": [
+      {
+        "device": "/dev/disk/by-label/ROOT",
+        "format": "btrfs",
+        "mountOptions": [
+          "subvol=/@/home"
+        ],
+        "path": "/home",
+        "wipeFilesystem": false
+      }
+    ],
     "files": [
       {
         "path": "/etc/hostname",
@@ -30,6 +48,14 @@
 	"contents": {
 	  "source": "data:text/plain;charset=utf-8;base64,{{ alp_vm.name | b64encode }}"
 	}
+      },
+      {
+        "path": "/etc/sudoers.d/{{ vm_mgmt_user | default('testenv') }}",
+        "mode": 420,
+        "overwrite": true,
+        "contents": {
+          "source": "data:text/plain;charset=utf-8;base64,{{ ((vm_mgmt_user | default('testenv')) ~ ' ALL=(ALL:ALL) NOPASSWD:ALL') | b64encode }}"
+        }
       }
     ]
   }

@@ -4,11 +4,11 @@ _libvirt_images: /var/lib/libvirt/images
 
 _alp_vm_name: "{{ vm_config.name | default('alptestvm') }}"
 
-_def_home_disk:
-  name: 'home'
-  size_gb: 100
-  fstype: 'xfs'
-  path: '/home'
+_def_disks:
+  - name: 'scratch'
+    size_gb: 100
+    fstype: 'btrfs'
+    path: '/srv/scratch'
 
 alp_vm:
   name: "{{ _alp_vm_name }}"
@@ -31,4 +31,4 @@ alp_vm:
   tpm:
     version: "{{ vm_config.tpm.version | default('2.0') }}"
     model: "{{ vm_config.tpm.model | default('tpm-tis') }}"
-  extra_disks: "{{ vm_config.extra_disks | default([_def_home_disk]) }}"
+  extra_disks: "{{ vm_config.extra_disks | default(_def_disks) }}"

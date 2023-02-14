@@ -1,0 +1,83 @@
+---
+
+- import_playbook: define_alp_vms_group.yml
+
+- hosts: alp_vms
+  gather_facts: true
+  tasks:
+
+    - name: Retrieve root mount details
+      set_fact:
+        root_mount: >-
+          {{ ansible_mounts | selectattr('mount', 'eq', '/') | first }}
+
+    - name: Show root_mount if requested
+      ansible.builtin.debug:
+        var: root_mount
+        verbosity: 2
+
+    - name: Identify root device
+      set_fact:
+        root_device: >-
+          {%- set ns = namespace(dev='', root_part=root_mount.device | basename) -%}
+          {%- for dev, details in ansible_devices.items() -%}
+          {%-   if ns.root_part in details.partitions -%}
+          {%-     set ns.dev = '/dev/' ~ dev -%}
+          {%-   endif -%}
+          {%- endfor -%}
+          {{- ns.dev -}}
+
+    - name: Show root_device if requested
+      ansible.builtin.debug:
+        var: root_device
+        verbosity: 2
+
+    - name: Identify root part number
+      set_fact:
+        root_part_num: >-
+          {{ root_mount.device | replace(root_device, '') }}
+
+    - name: Show root_part_num if requested
+      ansible.builtin.debug:
+        var: root_part_num
+        verbosity: 2
+
+    - name: Grow the root partition to fill available space
+      become: true
+      command: >-
+        /sbin/growpart {{ root_device }} {{ root_part_num }}
+      changed_when:
+        - ('NOCHANGE:' not in growpart_cmd.stdout)
+      failed_when:
+        - growpart_cmd.rc == 1
+        - ('it cannot be grown' not in growpart_cmd.stdout)
+      register:
+        growpart_cmd
+
+    - name: Show growpart output if requested
+      debug:
+        var: growpart_cmd
+        verbosity: 1
+
+    - name: Resize btrfs root filesystem to fill available space
+      become: true
+      command: >-
+        /sbin/transactional-update
+          --drop-if-no-change
+          --non-interactive
+          run btrfs filesystem resize max /
+      changed_when:
+        - ('No changes to the root file system - discarding snapshot' not in btrfs_fs_resize.stdout)
+      register:
+        btrfs_fs_resize
+
+    - name: Show btrfs filesystem resize output if requested
+      debug:
+        var: btrfs_fs_resize
+        verbosity: 1
+
+    - name: Reboot onto updated transactional snapshot
+      become: true
+      reboot:
+      when:
+        btrfs_fs_resize is changed

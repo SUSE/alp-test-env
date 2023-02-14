@@ -1,0 +1,6 @@
+---
+
+- hosts: libvirt_host
+  tasks:
+    - include_role:
+        name: libvirt_host
