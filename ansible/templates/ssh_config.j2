@@ -19,9 +19,10 @@ Host {{ vm.name }} {{ vm.ip }}
 Host{% for vm in managed_vms %} {{ vm.name }} {{ vm.ip }}{% endfor %}
 
     IdentityFile {{ [setup_ssh_key.path.local, setup_ssh_key.files[0].file] | join('/') }}
-    LogLevel QUIET  # quieten notice about automatically accepting host key
+    # quieten notice about automatically accepting host key
+    LogLevel QUIET
 {% if remote_libvirt %}
-    ProxyCommand ssh -W %h:%p libvirt_host
+    ProxyCommand ssh -W %h:%p {{ libvirt_host_ip }}
 {% endif %}
     StrictHostKeyChecking no
     User {{ vm_mgmt_user | default('testenv') }}
