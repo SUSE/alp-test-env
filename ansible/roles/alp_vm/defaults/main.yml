@@ -23,7 +23,7 @@ alp_vm:
   hardware:
     ram_mb: "{{ vm_config.ram_mb | default('4096') }}"
     vcpus: "{{ vm_config.vcpus | default('4') }}"
-    cpu_type:  "{{ vm_config.cpu_type | default('host-passthrough') }}"
+    cpu_type: "{{ vm_config.cpu_type | default('host-passthrough') }}"
     machine: "{{ vm_config.machine_type | default('q35') }}"
     video: "{{ vm_config.video | default('vga') }}"
     bus: "{{ vm_config.disk_bus | default('scsi') }}"

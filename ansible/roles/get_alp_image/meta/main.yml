@@ -1,4 +1,20 @@
 ---
 
+galaxy_info:
+  role_name: get_alp_image
+  author: fmccarthy@suse.com
+  description: Manage ALP VMs using Libvirt
+  company: SUSE
+  license: Apache
+  min_ansible_version: "6.0"
+  platforms:
+    - name: opensuse
+      versions:
+        - "15.4"
+    - name: Ubuntu
+      versions:
+        - jammy
+  galaxy_tags: []
+
 dependencies:
-  - alp_image_details
+  - role: alp_image_details

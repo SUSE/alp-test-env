@@ -6,12 +6,14 @@
   register: _virt_net
 
 - name: Print found VNets if any
-  debug:
+  ansible.builtin.debug:
     msg: "Currently defines VNets: {{ _virt_net.list_nets }}"
   when:
     - (_virt_net.list_nets | length) > 1
 
 - name: If needed cleanup VNet {{ vnet_config.name }}
+  when:
+    - vnet_config.name in _virt_net.list_nets
   block:
     - name: Stop existing VNet {{ vnet_config.name }}
       community.libvirt.virt_net:
@@ -32,6 +34,3 @@
         - vnet_config.name not in _virt_net_check.list_nets
       retries: 30
       delay: 2
-
-  when:
-    - vnet_config.name in _virt_net.list_nets

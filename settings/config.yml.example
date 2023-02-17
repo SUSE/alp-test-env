@@ -5,19 +5,19 @@
 #
 
 # The ALP version to target
-#alp_version: "0.0.1"
+#alp_version: "0.0.1"  # noqa yaml[comments]
 
 # The ALP arch to target
-#alp_arch: 'x86_64'
+#alp_arch: 'x86_64'  # noqa yaml[comments]
 
 # Choice of 'kvm' or 'kvm_encrypted'
-#alp_image_type: kvm
+#alp_image_type: kvm  # noqa yaml[comments]
 
 # Choice of 'build' or 'snapshot'
-#alp_build_type: build
+#alp_build_type: build  # noqa yaml[comments]
 
 # Override table for known ALP builds
-#alp_build_versions:
+#alp_build_versions:  # noqa yaml[comments]
 #  build:
 #    prefix: "Build"
 #    kvm: "23.14"
@@ -28,14 +28,14 @@
 #    kvm_encrypted: "20221216"
 
 # SSH Public Keys to Register
-#ssh_pub_keys:
+#ssh_pub_keys:  # noqa yaml[comments]
 #  files:
 #    - ~/.ssh/id_ed25519.pub
 #    - ~/.ssh/id_rsa.pub
 #  strings:
-#    - "<SSH Public Key Text>"
+#    - "<SSH Public Key Text>"  # noqa yaml[line-length]
 
-#vm_configs:
+#vm_configs:  # noqa yaml[comments]
 #  - name: alptestvm
 #    disk_size_gb: 100
 #    disk_bus: scsi

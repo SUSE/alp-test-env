@@ -2,7 +2,6 @@
 
 - name: Ensure required packages are installed
   become: true
-  package:
+  ansible.builtin.package:
     name: "{{ libvirt_host_required_packages }}"
     state: present
-

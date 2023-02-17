@@ -6,12 +6,13 @@
 # defined.
 #
 
-- hosts: localhost
+- name: Dynamically define libvirt_host
+  hosts: localhost
   connection: local
   gather_facts: false
   tasks:
     - name: Fail if no IP specified for remote Libvirt host
-      fail:
+      ansible.builtin.fail:
         msg: |-
           No IP specified for Remote Libvirt host
       when:

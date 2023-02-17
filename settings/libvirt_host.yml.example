@@ -5,17 +5,17 @@
 # If you wish to remotely use a libvirt host from your
 # workstation then uncomment the following lines, and
 # configure the settings appropriately
-#libvirt_host_type: remote
+#libvirt_host_type: remote  # noqa yaml[comments]
 
 # IP address of the libvirt host you are using
-#libvirt_host_ip: 192.168.123.45
-#libvirt_host_name: remote_host
-#libvirt_host_group: libvirt_hosts
+#libvirt_host_ip: 192.168.123.45  # noqa yaml[comments]
+#libvirt_host_name: remote_host  # noqa yaml[comments]
+#libvirt_host_group: libvirt_hosts  # noqa yaml[comments]
 
 # User account to connect to on the remote libvirt host if
 # not the same as the current user.
-#libvirt_host_user: remote_user
+#libvirt_host_user: remote_user  # noqa yaml[comments]
 
 # Explicitly specify the python interpretter to use on
 # the remote libvirt host if needed.
-#libvirt_host_python: /usr/bin/python3
+#libvirt_host_python: /usr/bin/python3  # noqa yaml[comments]

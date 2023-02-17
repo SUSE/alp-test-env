@@ -1,0 +1,30 @@
+---
+
+_ssh_key_defaults:
+  type: ed25519  # ed25519 or rsa
+  size: 4096  # only relevant for rsa
+
+_ssh_key_type: "{{ ssh_key_type | default(_ssh_key_defaults.type) }}"
+_ssh_key_file: "id_{{ _ssh_key_type }}"
+_ssh_local_dir: "{{ [playbook_dir | dirname, 'ssh'] | join('/') }}"
+_ssh_local_key: "{{ [_ssh_local_dir, _ssh_key_file] | join('/') }}"
+
+setup_ssh_key:
+  type: "{{ _ssh_key_type }}"
+  size: "{{ _ssh_key_defaults.size }}"
+  files:
+    - file: "{{ _ssh_key_file }}"
+      mode: "0600"
+      mode_decimal: 384
+    - file: "{{ _ssh_key_file }}.pub"
+      mode: "0644"
+      mode_decimal: 420
+  config:
+    file: "config"
+    mode: "0644"
+    options:
+      - {option: 'NoHostAuthenticationForLocalhost', value: 'yes'}
+      - {option: 'StrictHostKeyChecking', value: 'no'}
+  path:
+    local: "{{ _ssh_local_dir }}"
+    install: "~/.ssh/"

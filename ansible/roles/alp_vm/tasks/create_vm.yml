@@ -1,34 +1,26 @@
 ---
 # tasks file for vm creation
 
-- include_tasks: cleanup_vm.yml
+- name: Cleanup existing VN {{ alp_vm.name }}
+  ansible.builtin.include_tasks: cleanup_vm.yml
 
 - name: Install ALP VM backing image
   become: true
-  copy:
+  ansible.builtin.copy:
     src: "{{ alp_image.cached }}"
     dest: "{{ alp_vm.image.backing }}"
     mode: 0644
     remote_src: true
 
-- name: Create a disk image from VM {{ alp_vm.name }}
-  become: true
-  shell: |-
-    set -eu;
-    qemu-img create -f qcow2 -F qcow2 -o backing_file={{ alp_vm.image.backing }} {{ alp_vm.image.file }};
-    qemu-img resize {{ alp_vm.image.file }} {{ alp_vm.image.size }}
-  when:
-    - false
-
 - name: Create ignition config file
-  template:
+  ansible.builtin.template:
     src: "{{ alp_vm.ignition.template }}"
     dest: "{{ alp_vm.ignition.file }}"
     mode: 0600
 
 - name: Create VM {{ alp_vm.name }}
-  become: true 
-  command: >-
+  become: true
+  ansible.builtin.command: >-
     virt-install
       --connect qemu:///system
       --import
@@ -60,13 +52,18 @@
     {% endif %}
       --tpm backend.type=emulator,backend.version={{ alp_vm.tpm.version }},model={{ alp_vm.tpm.model }}
       --sysinfo type=fwcfg,entry0.name="opt/com.coreos/config",entry0.file="{{ alp_vm.ignition.file}}"
-      --disk path={{ alp_vm.image.file }},size={{ alp_vm.image.size_gb }},backing_store={{ alp_vm.image.backing }},backing_format=qcow2,bus={{ alp_vm.hardware.bus }},cache=none,serial={{ 'ALP-' ~ (alp_vm.name[0:15] | upper) }}
+      --disk path={{ alp_vm.image.file }},size={{ alp_vm.image.size_gb }},backing_store={{
+          alp_vm.image.backing }},backing_format=qcow2,bus={{ alp_vm.hardware.bus }},cache=none,serial={{
+          'ALP-' ~ (alp_vm.name[0:15] | upper) }}
     {% for _disk in alp_vm.extra_disks %}
-      --disk path={{ alp_vm.image.file | replace(alp_vm.name, alp_vm.name ~ '_' ~ _disk.name) }},size={{ _disk.size_gb | default(100) }},bus={{ alp_vm.hardware.bus }},cache=none,serial={{ 'ALP-' ~ (_disk.name[0:15] | upper) }}
+      --disk path={{ alp_vm.image.file | replace(alp_vm.name, alp_vm.name ~ '_' ~ _disk.name) }},size={{
+          _disk.size_gb | default(100) }},bus={{ alp_vm.hardware.bus }},cache=none,serial={{
+            'ALP-' ~ (_disk.name[0:15] | upper) }}
     {% endfor %}
       --noautoconsole
+  changed_when: false
   register: virt_install_result
 
 - name: Show results for creation of VM {{ alp_vm.name }}
-  debug:
+  ansible.builtin.debug:
     var: virt_install_result

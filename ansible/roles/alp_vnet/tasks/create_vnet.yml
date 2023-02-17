@@ -1,6 +1,7 @@
 ---
 
-- include_tasks: cleanup_vnet.yml
+- name: Cleanup existing VNet {{ vnet_config.name }}
+  ansible.builtin.include_tasks: cleanup_vnet.yml
 
 - name: Define VNet {{ vnet_config.name }}
   community.libvirt.virt_net:
@@ -9,9 +10,11 @@
     xml: "{{ lookup('template', 'virt_net.xml.j2') }}"
 
 - name: Create DHCP reservications for VNet {{ vnet_config.name }}
+  when:
+    - (vnet_config.dhcp | default(false)) | bool
   block:
     - name: Determine DHCP reservations for VNet {{ vnet_config.name }}
-      set_fact:
+      ansible.builtin.set_fact:
         dhcp_reservations: >-
           {%- set _rsvs = [] -%}
           {%- for _vm in vm_configs -%}
@@ -27,8 +30,6 @@
         name: "{{ vnet_config.name }}"
         xml: "<host mac='{{ item.mac }}' name='{{ item.name }}' ip='{{ item.ip }}'/>"
       loop: "{{ dhcp_reservations }}"
-  when:
-    - (vnet_config.dhcp | default(false)) | bool
 
 - name: Start VNet {{ vnet_config.name }}
   community.libvirt.virt_net:

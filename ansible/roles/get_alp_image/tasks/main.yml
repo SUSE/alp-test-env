@@ -1,19 +1,20 @@
 ---
 
 - name: Create cache dir
-  file:
+  ansible.builtin.file:
     path: "{{ alp.cache }}"
     state: directory
+    mode: 0755
 
 - name: Download ALP image to cache if needed
-  get_url:
+  ansible.builtin.get_url:
     dest: "{{ alp_image.cached }}"
     url: "{{ alp_image.url }}"
-    checksum: "{{ alp_image.checksum}}"
+    checksum: "{{ alp_image.checksum }}"
     mode: 0644
   register: alp_image_download
 
 - name: Report image that was downloaded
-  debug:
+  ansible.builtin.debug:
     msg: >-
       Selected image available as '{{ alp_image.cached }}'

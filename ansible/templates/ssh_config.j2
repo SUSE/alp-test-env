@@ -1,0 +1,27 @@
+{%- set remote_libvirt = ((libvirt_host_type | default('local')) == 'remote') -%}
+# SSH Config for alp-test-env ALP VMs
+
+NoHostAuthenticationForLocalhost yes
+
+{% if remote_libvirt %}
+Host libvirt_host {{ libvirt_host_ip }}
+    Hostname {{ libvirt_host_ip }}
+    User {{ libvirt_host_user }}
+    UserKnownHostsFile /dev/null
+    StrictHostKeyChecking no
+{% endif %}
+
+{% for vm in managed_vms %}
+Host {{ vm.name }} {{ vm.ip }}
+    Hostname {{ vm.ip }}
+{% endfor %}
+
+Host{% for vm in managed_vms %} {{ vm.name }} {{ vm.ip }}{% endfor %}
+
+    IdentityFile {{ [setup_ssh_key.path.local, setup_ssh_key.files[0].file] | join('/') }}
+    LogLevel QUIET  # quieten notice about automatically accepting host key
+{% if remote_libvirt %}
+    ProxyCommand ssh -W %h:%p libvirt_host
+{% endif %}
+    StrictHostKeyChecking no
+    User {{ vm_mgmt_user | default('testenv') }}

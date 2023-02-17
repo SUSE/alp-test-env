@@ -1,0 +1,13 @@
+---
+
+- name: Generate SSH key locally
+  delegate_to: localhost
+  connection: local
+  run_once: true
+  community.crypto.openssh_keypair:
+    path: "{{ setup_ssh_key.path.local }}/{{ item.file }}"
+    type: "{{ setup_ssh_key.type }}"
+    size: "{{ setup_ssh_key.size }}"
+    state: present
+    mode: "{{ item.mode }}"
+  loop: "{{ setup_ssh_key.files[0:1] }}"

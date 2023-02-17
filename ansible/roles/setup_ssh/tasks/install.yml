@@ -1,0 +1,24 @@
+---
+
+- name: Copy up locally generated key files
+  ansible.builtin.copy:
+    src: "{{ setup_ssh_key.path.local }}/{{ item.file }}"
+    dest: "{{ setup_ssh_key.path.install }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ setup_ssh_key.files }}"
+
+- name: Configure useful SSH options
+  ansible.builtin.lineinfile:
+    path: "{{ [setup_ssh_key.path.install, setup_ssh_key.config.file] | join('/') }}"
+    regexp: "^{{ item.option }}.*"
+    line: "{{ item.option }} {{ item.value }}"
+    state: present
+    create: true
+    mode: "0644"
+  loop: "{{ setup_ssh_key.config.options }}"
+
+- name: Authorize locally generated key
+  ansible.posix.authorized_key:
+    key: "{{ lookup('file', [setup_ssh_key.path.generate, setup_ssh_key.file ~ '.pub'] | join('/')) }}"
+    user: "{{ ansible_user }}"
+    state: "present"
