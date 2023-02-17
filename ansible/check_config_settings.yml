@@ -1,0 +1,23 @@
+---
+
+- hosts: localhost
+  gather_facts: false
+  tasks:
+
+    - name: Check if an ALP VMs config has been defined
+      ansible.builtin.fail:
+        msg: |-
+          No vm_configs settings detected.
+          Did you copy settings/vms.yml.example to settings/vms.yml and
+          customise it?
+      when:
+        - vm_configs is not defined
+
+    - name: Check if an ALP VNets config has been defined
+      ansible.builtin.fail:
+        msg: |-
+          No vnet_configs settings detected.
+          Did you copy settings/vnets.yml.example to settings/vnets.yml and
+          customise it?
+      when:
+        - vnet_configs is not defined

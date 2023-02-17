@@ -62,17 +62,6 @@ Run `bin/ansible-playbook ansible/test_env_create.yml` to create the VMs,
 and associated libvirt networking infrastructure, on the target Libvirt
 host, as specified by the configured `settings/*.yml` files.
 
-### Check if specified Test Env VMs are available
-Run `bin/ansible-playbook ansible/check_alp_vms_running.yml` to check
-that all the ALP VMs are up and contactable.
-
-NOTE: Currently you may need to run this playbook more than once if
-the test env have been recently created.
-
-### Grow root file system to fill available space
-Run `bin/ansible-playbook ansible/grow_root_filesystem.yml` to grow the
-root filesystem to fill available space.
-
 ## Cleaning up a Test Env
 
 Run `bin/ansible-playbook ansible/test_env_cleanup.yml` to cleanup any

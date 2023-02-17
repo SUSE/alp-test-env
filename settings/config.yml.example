@@ -34,22 +34,3 @@
 #    - ~/.ssh/id_rsa.pub
 #  strings:
 #    - "<SSH Public Key Text>"  # noqa yaml[line-length]
-
-#vm_configs:  # noqa yaml[comments]
-#  - name: alptestvm
-#    disk_size_gb: 100
-#    disk_bus: scsi
-#    ram_mb: 4096
-#    cpu_type: host-passthrough
-#    machine: q35
-#    vcpus: 4
-#    video: vga
-#    tpm:
-#      version: 2.0
-#      model: tpm-tis
-#    networks:
-#      - nettype: network
-#        netdev: default
-#      - nettype: bridge
-#        nettype: br0
-#        mac: "00:11:22:33:44:55"
