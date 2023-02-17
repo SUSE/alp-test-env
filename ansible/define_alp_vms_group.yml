@@ -12,20 +12,6 @@
   roles:
     - setup_ssh
   tasks:
-    - name: Determine management network details for ALP VMs
-      ansible.builtin.set_fact:
-        managed_vms: >-
-          {%- set _managed_vms = [] -%}
-          {%- for _vm in vm_configs -%}
-          {%-   set _mgmt_nics = _vm.nics | selectattr('nettype', 'eq', 'network') |
-                                            selectattr('netdev', 'eq', vm_mgmt_net |
-                                            default('alpmgmt')) | list -%}
-          {%-   if _mgmt_nics | length -%}
-          {%-     set _ = _managed_vms.append({'name': _vm.name,
-                                               'ip': (_mgmt_nics | first).ip }) -%}
-          {%-   endif -%}
-          {%- endfor -%}
-          {{- _managed_vms -}}
 
     - name: Fail if no viable ALP VMs were detected
       ansible.builtin.fail:

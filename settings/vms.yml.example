@@ -67,7 +67,7 @@ vm_configs:
 #    tpm:
 #      version: 2.0
 #      model: tpm-tis
-#    nics:
+    nics:
 
 #      # define 6 networks that won't be automatically configured
 #      - nettype: network

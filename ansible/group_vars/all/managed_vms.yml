@@ -1,0 +1,16 @@
+---
+
+managed_vms: >-
+  {%- set _managed_vms = [] -%}
+  {%- for _vm in vm_configs | default([]) -%}
+  {%-   set _mgmt_nics = _vm.nics | selectattr('nettype', 'eq', 'network') 
+                                  | selectattr('netdev', 'eq',
+                                               vm_mgmt_net |
+                                               default('alpmgmt'))
+                                  | list -%}
+  {%-   if _mgmt_nics | length -%}
+  {%-     set _ = _managed_vms.append({'name': _vm.name,
+                                       'ip': (_mgmt_nics | first).ip }) -%}
+  {%-   endif -%}
+  {%- endfor -%}
+  {{- _managed_vms -}}
