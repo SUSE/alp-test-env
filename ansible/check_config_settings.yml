@@ -6,7 +6,7 @@
 
     - name: Check if an ALP VMs config has been defined
       ansible.builtin.fail:
-        msg: |-
+        msg: >-
           No vm_configs settings detected.
           Did you copy settings/vms.yml.example to settings/vms.yml and
           customise it?
@@ -15,7 +15,7 @@
 
     - name: Check if an ALP VNets config has been defined
       ansible.builtin.fail:
-        msg: |-
+        msg: >-
           No vnet_configs settings detected.
           Did you copy settings/vnets.yml.example to settings/vnets.yml and
           customise it?
