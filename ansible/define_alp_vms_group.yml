@@ -34,12 +34,8 @@
         ansible_python_interpreter: "{{ vm_mgmt_python | default('/usr/bin/python3') }}"
         ansible_ssh_private_key_file: "{{ [setup_ssh_key.path.local, setup_ssh_key.files[0].file] | join('/') }}"
         ansible_ssh_common_args: >-
-          {% if (libvirt_host_type | default('local')) == 'remote' %}
           -o ProxyCommand='ssh -W %h:%p {{ libvirt_host_ip }}'
           -o UserKnownHostsFile=/dev/null
-          {% else %}
-          {{ omit }}
-          {% endif %}
         groups:
           - alp_vms
       loop: "{{ managed_vms }}"
@@ -56,7 +52,6 @@
         ansible_host: "{{ item.ip }}"
         ansible_python_interpreter: "{{ vm_mgmt_python | default('/usr/bin/python3') }}"
         ansible_ssh_private_key_file: "{{ [setup_ssh_key.path.local, setup_ssh_key.files[0].file] | join('/') }}"
-        ansible_ssh_common_args: "{{ omit }}"
         groups:
           - alp_vms
       loop: "{{ managed_vms }}"
