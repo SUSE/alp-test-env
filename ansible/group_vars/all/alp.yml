@@ -8,8 +8,8 @@ alp:
   default_build_versions:
     build:
       prefix: "Build"
-      kvm: "23.15"
-      kvm_encrypted: "23.20"
+      kvm: "23.17"
+      kvm_encrypted: "23.22"
     snapshot:
       prefix: "Snapshot"
       kvm: "20221216"
