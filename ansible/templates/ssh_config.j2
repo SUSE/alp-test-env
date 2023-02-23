@@ -26,3 +26,4 @@ Host{% for vm in managed_vms %} {{ vm.name }} {{ vm.ip }}{% endfor %}
 {% endif %}
     StrictHostKeyChecking no
     User {{ vm_mgmt_user | default('testenv') }}
+    UserKnownHostsFile /dev/null

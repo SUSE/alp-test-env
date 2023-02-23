@@ -1,0 +1,19 @@
+---
+
+- name: Check if container already available for workload {{ alp_workload.name }}
+  become: true
+  containers.podman.podman_image_info:
+    name: "{{ alp_workload.name }}"
+  register: workload_image_info
+
+- name: Retrieve container for workload {{ alp_workload.name }}
+  ansible.builtin.include_tasks: get_image.yml
+  when:
+    - (workload_image_info.images | length) == 0
+
+- name: Install container tools for workload {{ alp_workload.name }}
+  become: true
+  command: >-
+    podman container runlabel {{ alp_workload.labels.install }} {{ alp_workload.image }}
+  changed_when: false
+  register: workload_runlabel_install

@@ -29,5 +29,5 @@ _alp_image_url: >-
 alp_image:
   name: "{{ _alp_image_name }}"
   url: "{{ _alp_image_url }}"
-  cached: "{{ alp.cache }}/{{ _alp_image_name }}"
+  cached: "{{ alp.cache.images }}/{{ _alp_image_name }}"
   checksum: "sha256:{{ _alp_image_url }}.sha256"

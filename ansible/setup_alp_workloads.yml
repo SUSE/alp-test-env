@@ -1,0 +1,14 @@
+---
+
+- import_playbook: define_alp_vms_group.yml
+
+- hosts: alp_vms
+  gather_facts: false
+  tasks:
+    - name: Setup specified workloads
+      include_role:
+        name: alp_workload
+        tasks_from: install_workload.yml
+      loop_control:
+        loop_var: workload
+      loop: "{{ workloads | default(test_env_defaults.workloads) }}"

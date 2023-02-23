@@ -4,7 +4,9 @@ alp:
   image_base_urls:
     build: https://download.opensuse.org/repositories/SUSE:/ALP/images/
     snapshot: https://download.opensuse.org/repositories/SUSE:/ALP:/PUBLISH/images/
-  cache: "{{ '~/.cache/alp/images' | expanduser }}"
+  cache:
+    images: "{{ '~/.cache/alp/images' | expanduser }}"
+    workloads: "{{ '~/.cache/alp/workloads' | expanduser }}"
   default_build_versions:
     build:
       prefix: "Build"

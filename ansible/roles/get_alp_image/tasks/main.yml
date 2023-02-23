@@ -2,7 +2,7 @@
 
 - name: Create cache dir
   ansible.builtin.file:
-    path: "{{ alp.cache }}"
+    path: "{{ alp.cache.images }}"
     state: directory
     mode: 0755
 

@@ -1,0 +1,89 @@
+---
+
+- name: Pull container image for workload {{ alp_workload.name }}
+  delegate_to: "{{ groups.alp_vms | first }}"
+  run_once: true
+  containers.podman.podman_image:
+    name: "{{ alp_workload.image }}"
+    state: present
+  register: workload_image_pull
+
+- name: Gather info about image for workload {{ alp_workload.name }}
+  delegate_to: "{{ groups.alp_vms | first }}"
+  run_once: true
+  containers.podman.podman_image_info:
+    name: "{{ alp_workload.image }}"
+  register: workload_image_info
+
+- name: Check if container image already saved for {{ alp_workload.name }}
+  delegate_to: "{{ groups.alp_vms | first }}"
+  run_once: true
+  ansible.builtin.stat:
+    path:  "{{ workload_image.file.path }}"
+    get_attributes: false
+    get_checksum: false
+    get_mime: false
+  register: workload_image_file_check
+
+- name: Save container image for workload {{ alp_workload.name }}
+  delegate_to: "{{ groups.alp_vms | first }}"
+  run_once: true
+  containers.podman.podman_save:
+    image: "{{ alp_workload.image }}"
+    dest: "{{ workload_image.file.path }}"
+    force: false
+  register: workload_image_save
+  when:
+    - not workload_image_file_check.stat.exists
+
+- name: Check if compressed image already exists for {{ alp_workload.name }}
+  delegate_to: "{{ groups.alp_vms | first }}"
+  run_once: true
+  ansible.builtin.stat:
+    path:  "{{ workload_image.file.compressed }}"
+    get_attributes: false
+    get_checksum: false
+    get_mime: false
+  register: workload_image_compressed_check
+
+- name: Compress saved container image for workload {{ alp_workload.name }}
+  delegate_to: "{{ groups.alp_vms | first }}"
+  run_once: true
+  community.general.archive:
+    path:  "{{ workload_image.file.path }}"
+    dest: "{{ workload_image.file.compressed }}"
+    format: "{{ workload_image_compression }}"
+    force_archive: true
+  register: workload_image_archive
+  when:
+    - not workload_image_compressed_check.stat.exists
+
+- name: Fetch compressed image to local cache for {{ alp_workload.name }}
+  delegate_to: "{{ groups.alp_vms | first }}"
+  run_once: true
+  ansible.builtin.fetch:
+    dest: "{{ workload_image.file.cached | dirname }}/"
+    src: "{{ workload_image.file.compressed }}"
+    flat: true
+
+- name: Copy compressed image from local cache for {{ alp_workload.name }}
+  ansible.builtin.unarchive:
+    src: "{{ workload_image.file.cached }}"
+    dest: "{{ workload_image.file.compressed | dirname }}"
+    creates: "{{ workload_image.file.compressed }}"
+  when:
+    - inventory_hostname != (groups.alp_vms | first)
+  register: workload_image_cache_unarchive
+
+- name: Load container image for workload {{ alp_workload.name }}
+  containers.podman.podman_load:
+    input: "{{ workload_image.file.path }}"
+  register: workload_image_save
+  when:
+    - inventory_hostname != (groups.alp_vms | first)
+
+- name: Load container image as root for workload {{ alp_workload.name }}
+  become: true
+  containers.podman.podman_load:
+    input: "{{ workload_image.file.path }}"
+  register: workload_image_save

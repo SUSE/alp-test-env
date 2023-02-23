@@ -1,0 +1,54 @@
+---
+
+_def_container:
+  # podman pull registry.opensuse.org/suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads/gdm:latest
+  name: "{{ workload.name }}"
+  registry:  registry.opensuse.org
+  path: suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads
+  version: latest
+
+_def_labels:
+  install: install
+  uninstall: uninstall
+
+_workload:
+  name: "{{ workload.name }}"
+  container: "{{ _def_container | combine(workload.container | default({})) }}"
+  labels: "{{ _def_labels | combine(workload.labels | default({})) }}"
+
+alp_workload: >-
+  {{ _workload |
+     combine({'image':
+              [_workload.container.registry,
+               _workload.container.path,
+               [_workload.container.name,
+                _workload.container.version] | join(':')] | join('/')}) }}
+
+# NOTE: must retrieve image info into workload_image_info before
+# access this fact
+workload_image_timestamp: >-
+  {{ workload_image_info.images[0].Created |
+      regex_replace('[-_T:]', '') |
+      regex_replace('[.].*Z$', '') }}
+
+#workload_image_compression: bz2  # need to install bzip2
+workload_image_compression: gz
+
+_workload_image_file_name: >-
+  {{ alp_workload.name ~ '.image.' ~ workload_image_timestamp ~ '.tar' }}
+
+_workload_image_file_path: >-
+  {{ ['/tmp', _workload_image_file_name] | join('/') }}
+
+_workload_image_file_compressed: >-
+  {{ [_workload_image_file_path,
+      workload_image_compression] | join('.') }}
+
+workload_image:
+  file:
+    name: "{{ _workload_image_file_name }}"
+    path: "{{ _workload_image_file_path }}"
+    compressed: "{{ _workload_image_file_compressed }}"
+    cached: >-
+      {{ [alp.cache.workloads,
+          _workload_image_file_compressed | basename] | join('/') }}

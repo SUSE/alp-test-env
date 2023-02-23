@@ -1,0 +1,25 @@
+---
+
+test_env_defaults:
+  workloads:
+    # podman pull registry.opensuse.org/home/esampson/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads/ansible:latest
+    - name: ansible
+      container:
+        name: ansible
+        registry: registry.opensuse.org
+        path: home/esampson/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads
+        version: latest
+      labels:
+        install: root-install
+        uninstall: root-uninstall
+
+    # podman pull registry.opensuse.org/suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads/kvm:latest
+    - name: kvm
+      container:
+        name: kvm
+        registry: registry.opensuse.org
+        path: suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads
+        version: latest
+      labels:
+        install: install
+        uninstall: uninstall

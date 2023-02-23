@@ -62,6 +62,23 @@ Run `bin/ansible-playbook ansible/test_env_create.yml` to create the VMs,
 and associated libvirt networking infrastructure, on the target Libvirt
 host, as specified by the configured `settings/*.yml` files.
 
+## Installing Workloads
+
+To customise the workloads that will be installed, you can copy the
+`settings/workloads.yml.example` to `settings/workloads.yml` and modify
+the example list, which specifies the `ansible` and `kvm` workloads to
+be installed. These settings match the defaults that will be used if
+no workloads are specified.
+
+Run `bin/ansible-playbook ansible/setup_alp_workloads.yml` to install
+the specified workloads.
+
+### Support for runlabels
+
+It is expected that any workload container images specified will have
+labels defined that provide 'install' and 'uninstall' capabilities,
+though the actual names used can be customised.
+
 ## Cleaning up a Test Env
 
 Run `bin/ansible-playbook ansible/test_env_cleanup.yml` to cleanup any
@@ -96,11 +113,16 @@ testenv@alptestvm:~>
 # Future Enhancements
 
 TODO:
+  * Fix SSH Key setup; config.ign.j2 templating approach has some
+    limitations with regard to whitespace stripping, and file
+    ownership.
+  * Add support for installing relevant required packages as part of
+    the provisioning process.
   * Dynamically figure out latest Build or Snapshot image and download
     that, exposing via a generic symlink so that VM creation workflow
     can be agnostic of image version.
   * Finish off support for kvm_encrypted VM type.
   * After bringing up ALP VMs mount extra disks on specified mount points
-  * Install ansible container and use it to:
+  * Use ansible container to:
     * (re-)configure networking
     * setup Libvirt via container and bring up nested VMs.
