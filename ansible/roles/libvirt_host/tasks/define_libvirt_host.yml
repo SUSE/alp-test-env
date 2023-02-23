@@ -1,0 +1,39 @@
+---
+
+# Dynamically define libvirt_host node as an ansible inventory host
+# based upon the settings provided in group_vars/all/libvirt_host.yml,
+# skipping if not defined, or type is not remote.
+
+- name: Fail if no IP specified for remote Libvirt host
+  ansible.builtin.fail:
+    msg: |-
+      No IP specified for Remote Libvirt host
+  when:
+    - (libvirt_host_type | default('local')) == 'remote'
+    - libvirt_host_ip is not defined
+
+- name: Define remote libvirt_host node
+  ansible.builtin.add_host:
+    name: libvirt_host
+    hostname: "{{ libvirt_host_name | default('libvirt_host') }}"
+    ansible_user: "{{ libvirt_host_user | default(ansible_user) }}"
+    ansible_host: "{{ libvirt_host_ip }}"
+    ansible_python_interpreter: "{{ libvirt_host_python | default('/usr/bin/python3') }}"
+    groups:
+      - "{{ libvirt_host_group | default('libvirt_hosts') }}"
+  changed_when: false
+  when:
+    - (libvirt_host_type | default('local')) == 'remote'
+    - libvirt_host_ip is defined
+  register: define_remote_libvirt_host
+
+- name: Define local libvirt_host node
+  ansible.builtin.add_host:
+    name: libvirt_host
+    ansible_connection: local
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    groups:
+      - "{{ libvirt_host_group | default('libvirt_hosts') }}"
+  changed_when: false
+  when:
+    - define_remote_libvirt_host is skipped

@@ -1,6 +1,11 @@
 ---
 
-- name: Ensure libvirt_host ready host ALP VMs
+- import_playbook: define_libvirt_host.yml
+
+- name: Ensure libvirt_host ready to host ALP VMs
   hosts: libvirt_host
-  roles:
-    - libvirt_host
+  tasks:
+    - name:
+      ansible.builtin.include_role:
+        name: libvirt_host
+        tasks_from: setup.yml

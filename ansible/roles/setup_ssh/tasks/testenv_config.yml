@@ -1,0 +1,7 @@
+---
+
+- name: Generate SSH config for ALP VMs
+  ansible.builtin.template:
+    dest: "{{ [setup_ssh_key.path.local, setup_ssh_key.config.file] | join('/') }}"
+    src: "testenv_config.j2"
+    mode: "{{ setup_ssh_key.config.mode }}"

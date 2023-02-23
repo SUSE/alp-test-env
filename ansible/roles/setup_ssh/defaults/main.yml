@@ -15,10 +15,8 @@ setup_ssh_key:
   files:
     - file: "{{ _ssh_key_file }}"
       mode: "0600"
-      mode_decimal: 384
     - file: "{{ _ssh_key_file }}.pub"
       mode: "0644"
-      mode_decimal: 420
   config:
     file: "config"
     mode: "0644"

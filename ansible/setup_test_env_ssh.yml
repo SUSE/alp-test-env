@@ -1,0 +1,16 @@
+---
+
+- name: Setup test env SSH keys
+  hosts: localhost
+  gather_facts: false
+  tasks:
+
+    - name: Generate testenv SSH keys
+      ansible.builtin.include_role:
+        name: setup_ssh
+        tasks_from: create_keys.yml
+
+    - name: Generate testenv SSH config
+      ansible.builtin.include_role:
+        name: setup_ssh
+        tasks_from: testenv_config.yml

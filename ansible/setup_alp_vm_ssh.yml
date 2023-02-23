@@ -1,0 +1,25 @@
+---
+
+- import_playbook: define_alp_vms_group.yml
+
+- name: Setup SSH on ALP VMs for root
+  hosts: alp_vms
+  gather_facts: false
+  vars:
+    ansible_user: root
+  tasks:
+
+    - name: Configure SSH for root
+      ansible.builtin.include_role:
+        name: setup_ssh
+        tasks_from: install.yml
+
+- name: Setup SSH on ALP VMs for user {{ vm_mgmt_user }}
+  hosts: alp_vms
+  gather_facts: false
+  tasks:
+
+    - name: Configure SSH for user {{ vm_mgmt_user }}
+      ansible.builtin.include_role:
+        name: setup_ssh
+        tasks_from: install.yml

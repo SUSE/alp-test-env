@@ -19,6 +19,6 @@
 
 - name: Authorize locally generated key
   ansible.posix.authorized_key:
-    key: "{{ lookup('file', [setup_ssh_key.path.generate, setup_ssh_key.file ~ '.pub'] | join('/')) }}"
+    key: "{{ lookup('file', [setup_ssh_key.path.local, setup_ssh_key.files[1].file] | join('/')) }}"
     user: "{{ ansible_user }}"
     state: "present"

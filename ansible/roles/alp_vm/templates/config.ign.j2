@@ -49,11 +49,11 @@
     "files": [
       {
         "path": "/etc/hostname",
-	"mode": 420,
-	"overwrite": true,
-	"contents": {
-	  "source": "data:text/plain;charset=utf-8;base64,{{ alp_vm.name | b64encode }}"
-	}
+        "mode": 420,
+        "overwrite": true,
+        "contents": {
+          "source": "data:text/plain;charset=utf-8;base64,{{ alp_vm.name | b64encode }}"
+        }
       },
       {
         "path": "/etc/sudoers.d/{{ vm_mgmt_user | default('testenv') }}",
@@ -62,16 +62,6 @@
         "contents": {
           "source": "data:text/plain;charset=utf-8;base64,{{ ((vm_mgmt_user | default('testenv')) ~ ' ALL=(ALL:ALL) NOPASSWD:ALL') | b64encode }}"
         }
-{% for f in setup_ssh_key.files %}
-      },
-      {
-        "path": "/home/{{ vm_mgmt_user | default('testenv') }}/.ssh/{{ f.file }}",
-        "mode": {{ f.mode_decimal }},
-        "overwrite": true,
-        "contents": {
-          "source": "data:text/plain;charset=utf-8;base64,{{ (lookup('file', [setup_ssh_key.path.local, f.file] | join('/')) ~ '\n') | b64encode }}"
-        }
-{% endfor %}
       }
     ]
   }

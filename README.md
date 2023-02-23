@@ -113,9 +113,6 @@ testenv@alptestvm:~>
 # Future Enhancements
 
 TODO:
-  * Fix SSH Key setup; config.ign.j2 templating approach has some
-    limitations with regard to whitespace stripping, and file
-    ownership.
   * Add support for installing relevant required packages as part of
     the provisioning process.
   * Dynamically figure out latest Build or Snapshot image and download

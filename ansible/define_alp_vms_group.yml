@@ -13,54 +13,9 @@
     - setup_ssh
   tasks:
 
-    - name: Fail if no viable ALP VMs were detected
-      ansible.builtin.fail:
-        msg: |-
-          No viable ALP VM definitions detected.
-          Ensure that each VM specified by vm_configs in settings/vms.yml has
-          a NIC entry associated with the specified management network.
+    - name: Define alp_vms group if not already defined
+      ansible.builtin.include_role:
+        name: alp_vm
+        tasks_from: define_alp_vms.yml
       when:
-        - (managed_vms | length) == 0
-
-    # Dynamically define ALP VMs as Ansible inventory hosts in the alp_vms
-    # group, either directly accessible from the local host, or proxying
-    # via the specified libvirt host.
-    - name: Add Remotely accessible ALP VMs
-      ansible.builtin.add_host:
-        name: "{{ item.name }}"
-        hostname: "{{ item.name }}"
-        ansible_user: "{{ vm_mgmt_user | default('testenv') }}"
-        ansible_host: "{{ item.ip }}"
-        ansible_python_interpreter: "{{ vm_mgmt_python | default('/usr/bin/python3') }}"
-        ansible_ssh_private_key_file: "{{ [setup_ssh_key.path.local, setup_ssh_key.files[0].file] | join('/') }}"
-        ansible_ssh_common_args: >-
-          -o ProxyCommand='ssh -W %h:%p {{ libvirt_host_ip }}'
-          -o UserKnownHostsFile=/dev/null
-        groups:
-          - alp_vms
-      loop: "{{ managed_vms }}"
-      changed_when: false
-      when:
-        - (libvirt_host_type | default('local')) == 'remote'
-      register: define_remote_alp_vms
-
-    - name: Add locally accessible ALP VMs
-      ansible.builtin.add_host:
-        name: "{{ item.name }}"
-        hostname: "{{ item.name }}"
-        ansible_user: "{{ vm_mgmt_user | default('testenv') }}"
-        ansible_host: "{{ item.ip }}"
-        ansible_python_interpreter: "{{ vm_mgmt_python | default('/usr/bin/python3') }}"
-        ansible_ssh_private_key_file: "{{ [setup_ssh_key.path.local, setup_ssh_key.files[0].file] | join('/') }}"
-        groups:
-          - alp_vms
-      loop: "{{ managed_vms }}"
-      when:
-        - define_remote_alp_vms is skipped
-      changed_when: false
-
-    - name: Generate SSH config for ALP VMs
-      ansible.builtin.template:
-        dest: "{{ [setup_ssh_key.path.local, setup_ssh_key.config.file] | join('/') }}"
-        src: "{{ [playbook_dir, 'templates', 'ssh_config.j2'] | join('/') }}"
-        mode: "{{ setup_ssh_key.config.mode }}"
+        - ('alp_vms' not in groups)
