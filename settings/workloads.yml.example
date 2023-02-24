@@ -10,8 +10,8 @@ workloads:
       path: home/esampson/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads
       version: latest
     labels:
-      install: root-install
-      uninstall: root-uninstall
+      install: install
+      uninstall: uninstall
 
   # podman pull registry.opensuse.org/suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads/kvm:latest
   - name: kvm

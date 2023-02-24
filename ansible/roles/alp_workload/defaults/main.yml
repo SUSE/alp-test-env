@@ -37,8 +37,9 @@ workload_image_compression: gz
 _workload_image_file_name: >-
   {{ alp_workload.name ~ '.image.' ~ workload_image_timestamp ~ '.tar' }}
 
+# /tmp may be a tmpfs of limited capacity
 _workload_image_file_path: >-
-  {{ ['/tmp', _workload_image_file_name] | join('/') }}
+  {{ ['/var/tmp', _workload_image_file_name] | join('/') }}
 
 _workload_image_file_compressed: >-
   {{ [_workload_image_file_path,
