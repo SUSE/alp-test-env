@@ -71,32 +71,32 @@ vm_configs:
 
 #      # define 6 networks that won't be automatically configured
 #      - nettype: network
-#        netdev: alpmgmt
+#        netdev: alpnet1
 #        mac: "52:54:00:A1:00:01"
 #        ip: "192.168.181.2"
 
 #      - nettype: network
-#        netdev: alpmgmt
+#        netdev: alpnet2
 #        mac: "52:54:00:A2:00:01"
 #        ip: "192.168.182.2"
 
 #      - nettype: network
-#        netdev: alpmgmt
+#        netdev: alpnet3
 #        mac: "52:54:00:A3:00:01"
 #        ip: "192.168.183.2"
 
 #      - nettype: network
-#        netdev: alpmgmt
+#        netdev: alpnet4
 #        mac: "52:54:00:A4:00:01"
 #        ip: "192.168.184.2"
 
 #      - nettype: network
-#        netdev: alpmgmt
+#        netdev: alpnet5
 #        mac: "52:54:00:A5:00:01"
 #        ip: "192.168.185.2"
 
 #      - nettype: network
-#        netdev: alpmgmt
+#        netdev: alpnet6
 #        mac: "52:54:00:A6:00:01"
 #        ip: "192.168.186.2"
 

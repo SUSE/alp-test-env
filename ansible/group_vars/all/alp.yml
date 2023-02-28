@@ -1,12 +1,16 @@
 ---
 
+# Use a cache dir in /var/tmp to avoid path resolution issues
+# when switching between different users.
+alp_cache_dir: "{{ ['', 'var', 'tmp', 'alp'] | join('/') }}"
+
 alp:
   image_base_urls:
     build: https://download.opensuse.org/repositories/SUSE:/ALP/images/
     snapshot: https://download.opensuse.org/repositories/SUSE:/ALP:/PUBLISH/images/
   cache:
-    images: "{{ '~/.cache/alp/images' | expanduser }}"
-    workloads: "{{ '~/.cache/alp/workloads' | expanduser }}"
+    images: "{{ [alp_cache_dir, 'images'] | join('/') }}"
+    workloads: "{{ [alp_cache_dir, 'workloads'] | join('/') }}"
   default_build_versions:
     build:
       prefix: "Build"

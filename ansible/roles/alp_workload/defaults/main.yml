@@ -31,25 +31,14 @@ workload_image_timestamp: >-
       regex_replace('[-_T:]', '') |
       regex_replace('[.].*Z$', '') }}
 
-#workload_image_compression: bz2  # need to install bzip2
-workload_image_compression: gz
-
 _workload_image_file_name: >-
   {{ alp_workload.name ~ '.image.' ~ workload_image_timestamp ~ '.tar' }}
 
 # /tmp may be a tmpfs of limited capacity
 _workload_image_file_path: >-
-  {{ ['/var/tmp', _workload_image_file_name] | join('/') }}
-
-_workload_image_file_compressed: >-
-  {{ [_workload_image_file_path,
-      workload_image_compression] | join('.') }}
+  {{ [alp.cache.workloads, _workload_image_file_name] | join('/') }}
 
 workload_image:
   file:
     name: "{{ _workload_image_file_name }}"
     path: "{{ _workload_image_file_path }}"
-    compressed: "{{ _workload_image_file_compressed }}"
-    cached: >-
-      {{ [alp.cache.workloads,
-          _workload_image_file_compressed | basename] | join('/') }}

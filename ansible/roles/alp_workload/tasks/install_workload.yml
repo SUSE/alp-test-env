@@ -1,6 +1,12 @@
 ---
 
-- name: Check if container already available for workload {{ alp_workload.name }}
+- name: Ensure cache directory exists for workload {{ alp_workload.name }}
+  ansible.builtin.file:
+    path: "{{ alp.cache.workloads }}"
+    state: directory
+    mode: 0755
+
+- name: Check if container already available as root for workload {{ alp_workload.name }}
   become: true
   containers.podman.podman_image_info:
     name: "{{ alp_workload.name }}"

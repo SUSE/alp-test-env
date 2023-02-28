@@ -2,7 +2,6 @@
 
 - import_playbook: check_config_settings.yml
 - import_playbook: setup_test_env_ssh.yml
-- import_playbook: define_libvirt_host.yml
 - import_playbook: setup_libvirt_host.yml
 - import_playbook: get_alp_image.yml
 - import_playbook: create_alp_vnets.yml
