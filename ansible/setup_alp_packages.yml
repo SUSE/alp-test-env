@@ -1,0 +1,21 @@
+---
+
+- import_playbook: define_alp_vms_group.yml
+
+- name: Setup SSH on ALP VMs for user {{ vm_mgmt_user }}
+  hosts: alp_vms
+  gather_facts: false
+  tasks:
+
+    - name: Install required packages
+      become: true
+      ansible.builtin.package:
+        name: "{{ alp_packages.required }}"
+        state: present
+      register: alp_required_packages
+
+    - name: Reboot if required
+      become: true
+      reboot:
+      when:
+        - alp_required_packages is changed

@@ -9,3 +9,4 @@
 - import_playbook: check_alp_vms_running.yml
 - import_playbook: setup_alp_vm_ssh.yml
 - import_playbook: grow_root_filesystem.yml
+- import_playbook: setup_alp_packages.yml

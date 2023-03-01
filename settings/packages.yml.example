@@ -1,0 +1,10 @@
+---
+
+alp_packages:
+  required:
+    #- bzip2  # needed for tar.bz2 in ansible.builtin.unarchive
+    #- e2fsprogs  # needed for formatting ext2/3/4 file systems
+    - kernel-default
+    - "-kernel-default-base"
+    - python3-rpm  # needed by ansible.builtin.package_facts
+    - python3-libvirt-python
