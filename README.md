@@ -48,7 +48,7 @@ Example configuration files are provided with comments explaining what
 options are available.
 
 NOTE: It is is highly recommended to create the config.yml, vnets.yml
-and vms.yml under settings. Setup the libvirt_host.yml if you want to
+and vms.yml under settings. Setup the `libvirt_host.yml` if you want to
 use a remote Libvirt host.
 
 If you don't already have a suitable version of Ansible available, you
@@ -56,28 +56,30 @@ can run `bin/create-venv` to create an appropriatlely setup virtualenv,
 with all of the relevant Ansible commands symlinked under the `bin`
 directory.
 
-## Creating a Test Env
-
-Run `bin/ansible-playbook ansible/test_env_create.yml` to create the VMs,
-and associated libvirt networking infrastructure, on the target Libvirt
-host, as specified by the configured `settings/*.yml` files.
-
-## Installing Workloads
+## Configuring Workloads to be setup
 
 To customise the workloads that will be installed, you can copy the
 `settings/workloads.yml.example` to `settings/workloads.yml` and modify
-the example list, which specifies the `ansible` and `kvm` workloads to
-be installed. These settings match the defaults that will be used if
+the example list, which, by default, specifies the `ansible` workload
+to be installed. These settings match the defaults that will be used if
 no workloads are specified.
 
-Run `bin/ansible-playbook ansible/setup_alp_workloads.yml` to install
-the specified workloads.
+The configured workloads will automatically be installed when bringing
+up the test env, but if you configure additional workloads after having
+created a test-env, you can run the `ansible/setup_alp_workloads.yml`
+playbook to install them without having to recreate the entire test env.
 
 ### Support for runlabels
 
 It is expected that any workload container images specified will have
 labels defined that provide 'install' and 'uninstall' capabilities,
 though the actual names used can be customised.
+
+## Creating a Test Env
+
+Run `bin/ansible-playbook ansible/test_env_create.yml` to create the VMs,
+and associated libvirt networking infrastructure, on the target Libvirt
+host, as specified by the configured `settings/*.yml` files.
 
 ## Cleaning up a Test Env
 
