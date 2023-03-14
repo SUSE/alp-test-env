@@ -20,8 +20,8 @@
 #alp_build_versions:  # noqa yaml[comments]
 #  build:
 #    prefix: "Build"
-#    kvm: "24.1"
-#    kvm_encrypted: "24.1"
+#    kvm: "24.3"
+#    kvm_encrypted: "24.4"
 #  snapshot:
 #    prefix: "Snapshot"
 #    kvm: "20221216"
