@@ -1,0 +1,17 @@
+---
+
+# Resolve the dynamically calculated _alp_build_versions when this
+# role is first loaded, so that we retain consistent values for the
+# duration of an ansible-playbook run.
+- name: Resolve known alp_build_versions
+  set_fact:
+    alp_build_versions: "{{ _alp_build_versions }}"
+  when:
+    - alp_build_versions is not defined
+  register: dynamic_build_versions
+
+- name: Show known ALP build versions
+  debug:
+    var: alp_build_versions
+  when:
+    - dynamic_build_versions is not skipped

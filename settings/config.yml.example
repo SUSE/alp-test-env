@@ -16,17 +16,6 @@
 # Choice of 'build' or 'snapshot'
 #alp_build_type: build  # noqa yaml[comments]
 
-# Override table for known ALP builds
-#alp_build_versions:  # noqa yaml[comments]
-#  build:
-#    prefix: "Build"
-#    kvm: "24.3"
-#    kvm_encrypted: "24.4"
-#  snapshot:
-#    prefix: "Snapshot"
-#    kvm: "20221216"
-#    kvm_encrypted: "20221216"
-
 # SSH Public Keys to Register
 #ssh_pub_keys:  # noqa yaml[comments]
 #  files:

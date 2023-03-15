@@ -9,15 +9,37 @@ _alp_build_type: >-
 _alp_image_type: >-
   {{ alp_image_type | default('kvm') }}
 
-_alp_build_versions: >-
-  {{ alp_build_versions | default(alp.default_build_versions) }}
-
-_alp_build_version: >-
-  {{ _alp_build_versions[_alp_build_type].prefix ~
-     _alp_build_versions[_alp_build_type][_alp_image_type] }}
-
 _alp_arch: >-
   {{ alp_arch | default('x86_64') }}
+
+_alp_build_versions: >-
+  {%- set _ns = namespace() -%}
+  {%- set _ns.abvers = dict() -%}
+  {%- set _ns.itypes = ['kvm', 'kvm_encrypted'] -%}
+  {%- for _btype in alp.build_types -%}
+  {%-   set _bdict = dict(prefix=(_btype | capitalize)) -%}
+  {%-   set _qcow2s = lookup('url',
+                              alp.image_base_urls[_btype],
+                              split_lines=True,
+                              wantlist=True) |
+                      select('match', '^ *<td *class="name".*[.]' ~ _alp_arch ~ '.*[.]qcow2"') |
+                      map('regex_replace', '^.*<td.*href="[.]/(.*[.]qcow2)".*', '\\1') |
+                      list -%}
+  {%-   set _build_numbers = [] -%}
+  {%-   for _itype in alp.image_types -%}
+  {%-     set _ = _build_numbers.append((_itype, _qcow2s |
+                                          select('match', '^.*-' ~ _itype ~ '-.*$') | first |
+                                          regex_replace('^ALP-VM.*-' ~ _itype ~ '-' ~ _bdict.prefix ~ '(.*)[.]qcow2$', '\\1'))
+                                        ) -%}
+  {%-   endfor -%}
+  {%-   set _bdict = _bdict | combine(dict(_build_numbers)) -%}
+  {%-   set _ns.abvers = _ns.abvers | combine({_btype: _bdict}) -%}
+  {%- endfor -%}
+  {{- _ns.abvers -}}
+
+_alp_build_version: >-
+  {{ alp_build_versions[_alp_build_type].prefix ~
+     alp_build_versions[_alp_build_type][_alp_image_type] }}
 
 _alp_image_name: >-
   {{ 'ALP-VM.' ~ _alp_arch ~ '-' ~ _alp_version ~ '-' ~
