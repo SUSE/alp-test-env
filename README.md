@@ -117,11 +117,5 @@ testenv@alptestvm:~>
 TODO:
   * Add support for installing relevant required packages as part of
     the provisioning process.
-  * Dynamically figure out latest Build or Snapshot image and download
-    that, exposing via a generic symlink so that VM creation workflow
-    can be agnostic of image version.
   * Finish off support for kvm_encrypted VM type.
   * After bringing up ALP VMs mount extra disks on specified mount points
-  * Use ansible container to:
-    * (re-)configure networking
-    * setup Libvirt via container and bring up nested VMs.

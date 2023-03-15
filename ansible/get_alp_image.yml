@@ -3,5 +3,6 @@
 - import_playbook: define_libvirt_host.yml
 
 - hosts: libvirt_host
+  gather_facts: false
   roles:
     - get_alp_image

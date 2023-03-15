@@ -5,19 +5,41 @@
   tasks:
 
     - name: Check if an ALP VMs config has been defined
-      ansible.builtin.fail:
-        msg: >-
-          No vm_configs settings detected.
+      ansible.builtin.assert:
+        that:
+          - vm_configs is defined
+        success_msg: >-
+          'vm_configs' has been defined.
+        fail_msg: >-
+          No 'vm_configs' settings detected.
           Did you copy settings/vms.yml.example to settings/vms.yml and
           customise it?
-      when:
-        - vm_configs is not defined
 
     - name: Check if an ALP VNets config has been defined
-      ansible.builtin.fail:
-        msg: >-
-          No vnet_configs settings detected.
+      ansible.builtin.assert:
+        that:
+          - vnet_configs is defined
+        success_msg: >-
+          'vnet_configs' has been defined.
+        fail_msg: >-
+          No 'vnet_configs' settings detected.
           Did you copy settings/vnets.yml.example to settings/vnets.yml and
           customise it?
-      when:
-        - vnet_configs is not defined
+
+    - name: Ensure a valid alp_build_type has been specified
+      ansible.builtin.assert:
+        that:
+          - alp_build_type in alp.build_types
+        success_msg: >-
+          alp_build_type is '{{ alp_build_type }}'
+        fail_msg: >-
+          'alp_build_type' must be one of {{ alp.build_types }}
+
+    - name: Ensure a valid alp_image_type has been specified
+      ansible.builtin.assert:
+        that:
+          - alp_image_type in alp.image_types
+        success_msg: >-
+          alp_image_type is '{{ alp_image_type }}'
+        fail_msg: >-
+          'alp_image_type' must be one of {{ alp.image_types }}
