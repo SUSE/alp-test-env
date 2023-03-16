@@ -4,9 +4,6 @@
 # User configurable settings
 #
 
-# The ALP version to target
-#alp_version: "0.0.1"  # noqa yaml[comments]
-
 # The ALP arch to target
 #alp_arch: 'x86_64'  # noqa yaml[comments]
 

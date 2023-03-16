@@ -7,7 +7,7 @@ test_env_defaults:
       container:
         name: ansible
         registry: registry.opensuse.org
-        path: suyse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads
+        path: suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads
         version: latest
       labels:
         install: install

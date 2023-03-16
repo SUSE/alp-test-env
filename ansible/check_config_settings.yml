@@ -4,7 +4,31 @@
   gather_facts: false
   tasks:
 
-    - name: Check if an ALP VMs config has been defined
+    - name: Check that required settings files are present
+      ansible.builtin.stat:
+        path: "{{ [playbook_dir | dirname, 'settings', item] | join('/') }}"
+      loop: "{{ required_settings }}"
+      register: stat_required_settings
+
+    - name: Initialise required settings files if not found
+      ansible.builtin.copy:
+        src: "{{ [playbook_dir | dirname, 'settings', item.item] | join('/') }}.example"
+        dest: "{{ [playbook_dir | dirname, 'settings', item.item] | join('/') }}"
+        mode: 0644
+      loop: "{{ stat_required_settings.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+      register: copy_required_settings
+
+    - name: Report if required settings files were created
+      ansible.builtin.debug:
+        msg: >-
+          Required settings files have been setup.
+          Please customise as needed.
+      when:
+        - copy_required_settings is changed
+
+    - name: Verify ALP vm_configs has been defined
       ansible.builtin.assert:
         that:
           - vm_configs is defined
@@ -15,7 +39,7 @@
           Did you copy settings/vms.yml.example to settings/vms.yml and
           customise it?
 
-    - name: Check if an ALP VNets config has been defined
+    - name: Verify ALP vnet_configs has been defined
       ansible.builtin.assert:
         that:
           - vnet_configs is defined
@@ -26,20 +50,3 @@
           Did you copy settings/vnets.yml.example to settings/vnets.yml and
           customise it?
 
-    - name: Ensure a valid alp_build_type has been specified
-      ansible.builtin.assert:
-        that:
-          - alp_build_type in alp.build_types
-        success_msg: >-
-          alp_build_type is '{{ alp_build_type }}'
-        fail_msg: >-
-          'alp_build_type' must be one of {{ alp.build_types }}
-
-    - name: Ensure a valid alp_image_type has been specified
-      ansible.builtin.assert:
-        that:
-          - alp_image_type in alp.image_types
-        success_msg: >-
-          alp_image_type is '{{ alp_image_type }}'
-        fail_msg: >-
-          'alp_image_type' must be one of {{ alp.image_types }}

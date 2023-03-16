@@ -10,7 +10,7 @@
     - name: Install required packages
       become: true
       ansible.builtin.package:
-        name: "{{ alp_packages.required }}"
+        name: "{{ (alp_packages | default({})).required | default([]) }}"
         state: present
       register: alp_required_packages
 
