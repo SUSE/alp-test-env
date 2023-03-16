@@ -1,17 +1,17 @@
 ---
 
-# Resolve the dynamically calculated _alp_build_versions when this
-# role is first loaded, so that we retain consistent values for the
+# Resolve dynamically calculated _alp_image_name when this role
+# is first loaded, so that we retain a consistent value for the
 # duration of an ansible-playbook run.
-- name: Resolve known alp_build_versions
+- name: Resolve alp_image_name
   set_fact:
-    alp_build_versions: "{{ _alp_build_versions }}"
+    alp_image_name: "{{ _alp_image_name }}"
   when:
-    - alp_build_versions is not defined
-  register: dynamic_build_versions
+    - alp_image_name is not defined
+  register: dynamic_image_name
 
-- name: Show known ALP build versions
+- name: Show calculated ALP image name
   debug:
-    var: alp_build_versions
+    var: alp_image_name
   when:
-    - dynamic_build_versions is not skipped
+    - dynamic_image_name is not skipped
