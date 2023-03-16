@@ -4,7 +4,10 @@ alp_packages:
   required:
     #- bzip2  # needed for tar.bz2 in ansible.builtin.unarchive
     #- e2fsprogs  # needed for formatting ext2/3/4 file systems
-    - kernel-default
-    - "-kernel-default-base"
+    - kernel-default  # need complete set of kernel modules
+    - "-kernel-default-base"  # remove to avoid conflict
+    - netcat-openbsd  # needed for remote virsh interaction
+    - python3-libvirt-python  # needed by community.libvirt
+    - python3-lxml  # needed by community.libvirt.virt_net
     - python3-rpm  # needed by ansible.builtin.package_facts
-    - python3-libvirt-python
+    - swtpm  # needed for ALP VM creation
