@@ -7,10 +7,22 @@
   gather_facts: false
   tasks:
 
+    - name: Determine set of required packages
+      ansible.builtin.set_fact:
+        required_packages: >-
+          {%- set _pkgs=[] -%}
+          {%- if alp_packages is defined -%}
+          {%-   set _ = _pkgs.extend(alp_packages.required | default([])) -%}
+          {%- endif -%}
+          {%- for w in alp_workloads | default(test_env_defaults.workloads) -%}
+          {%-   set _ = _pkgs.extend(w.packages | default([])) -%}
+          {%- endfor -%}
+          {{- _pkgs -}}
+
     - name: Install required packages
       become: true
       ansible.builtin.package:
-        name: "{{ (alp_packages | default({})).required | default([]) }}"
+        name: "{{ required_packages }}"
         state: present
       register: alp_required_packages
 

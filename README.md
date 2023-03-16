@@ -187,7 +187,5 @@ testenv@alptestvm:~>
 # Future Enhancements
 
 TODO:
-  * Add support for installing relevant required packages as part of
-    the provisioning process.
   * Finish off support for kvm_encrypted VM type.
   * After bringing up ALP VMs mount extra disks on specified mount points
