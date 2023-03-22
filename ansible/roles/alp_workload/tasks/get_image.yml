@@ -19,7 +19,7 @@
   delegate_to: "{{ groups.alp_vms | first }}"
   run_once: true
   ansible.builtin.stat:
-    path:  "{{ workload_image.file.path }}"
+    path: "{{ workload_image.file.path }}"
     get_attributes: false
     get_checksum: false
     get_mime: false
@@ -48,6 +48,7 @@
   ansible.builtin.copy:
     src: "{{ workload_image.file.path }}"
     dest: "{{ workload_image.file.path | dirname }}"
+    mode: "0644"
   when:
     - inventory_hostname != (groups.alp_vms | first)
   register: workload_image_cache_copy

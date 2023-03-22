@@ -4,14 +4,14 @@
   ansible.builtin.file:
     path: "{{ alp.cache.images }}"
     state: directory
-    mode: 0755
+    mode: "0755"
 
 - name: Download ALP image to cache if needed
   ansible.builtin.get_url:
     dest: "{{ alp_image.cached }}"
     url: "{{ alp_image.url }}"
     checksum: "{{ alp_image.checksum }}"
-    mode: 0644
+    mode: "0644"
   register: alp_image_download
 
 - name: Report image that was downloaded

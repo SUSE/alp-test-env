@@ -1,0 +1,4 @@
+# This file contains ignores rule violations for ansible-lint
+settings/config.yml yaml[comments]
+settings/libvirt_host.yml yaml[comments]
+settings/vms.yml yaml[comments]

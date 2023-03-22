@@ -4,7 +4,7 @@
   ansible.builtin.file:
     path: "{{ alp.cache.workloads }}"
     state: directory
-    mode: 0755
+    mode: "0755"
 
 - name: Check if container already available as root for workload {{ alp_workload.name }}
   become: true
@@ -19,7 +19,7 @@
 
 - name: Install container tools for workload {{ alp_workload.name }}
   become: true
-  command: >-
+  ansible.builtin.command: >-
     podman container runlabel {{ alp_workload.labels.install }} {{ alp_workload.image }}
   changed_when: false
   register: workload_runlabel_install

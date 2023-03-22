@@ -3,7 +3,7 @@
 managed_vms: >-
   {%- set _managed_vms = [] -%}
   {%- for _vm in vm_configs | default([]) -%}
-  {%-   set _mgmt_nics = _vm.nics | selectattr('nettype', 'eq', 'network') 
+  {%-   set _mgmt_nics = _vm.nics | selectattr('nettype', 'eq', 'network')
                                   | selectattr('netdev', 'eq',
                                                vm_mgmt_net |
                                                default('alpmgmt'))

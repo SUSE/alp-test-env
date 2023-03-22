@@ -1,6 +1,7 @@
 ---
 
-- hosts: localhost
+- name: Check configuation settings are setup and appropriate
+  hosts: localhost
   gather_facts: false
   tasks:
 
@@ -14,13 +15,13 @@
       ansible.builtin.copy:
         src: "{{ [playbook_dir | dirname, 'settings', item.item] | join('/') }}.example"
         dest: "{{ [playbook_dir | dirname, 'settings', item.item] | join('/') }}"
-        mode: 0644
+        mode: "0644"
       loop: "{{ stat_required_settings.results }}"
       loop_control:
         label: "{{ item.item }}"
       register: copy_required_settings
 
-    - name: Report if required settings files were created
+    - name: Report if required settings files were created  # noqa no-handler
       ansible.builtin.debug:
         msg: >-
           Required settings files have been setup.
@@ -49,4 +50,3 @@
           No 'vnet_configs' settings detected.
           Did you copy settings/vnets.yml.example to settings/vnets.yml and
           customise it?
-
