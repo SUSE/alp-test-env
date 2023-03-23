@@ -4,14 +4,14 @@
 # is first loaded, so that we retain a consistent value for the
 # duration of an ansible-playbook run.
 - name: Resolve alp_image_name
-  set_fact:
+  ansible.builtin.set_fact:
     alp_image_name: "{{ _alp_image_name }}"
   when:
     - alp_image_name is not defined
   register: dynamic_image_name
 
 - name: Show calculated ALP image name
-  debug:
+  ansible.builtin.debug:
     var: alp_image_name
   when:
     - dynamic_image_name is not skipped

@@ -5,16 +5,16 @@
 #
 
 # The ALP arch to target
-#alp_arch: 'x86_64'  # noqa yaml[comments]
+#alp_arch: 'x86_64'
 
 # Choice of 'kvm' or 'kvm_encrypted'
-#alp_image_type: kvm  # noqa yaml[comments]
+#alp_image_type: kvm
 
 # Choice of 'build' or 'snapshot'
-#alp_build_type: build  # noqa yaml[comments]
+#alp_build_type: build
 
 # SSH Public Keys to Register
-#ssh_pub_keys:  # noqa yaml[comments]
+#ssh_pub_keys:
 #  files:
 #    - ~/.ssh/id_ed25519.pub
 #    - ~/.ssh/id_rsa.pub

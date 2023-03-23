@@ -184,6 +184,19 @@ Have a lot of fun...
 testenv@alptestvm:~>
 ```
 
+
+# Contributing
+
+The code should pass validation with `bin/ansible-lint` (version 6.14 as
+of writing), noting that 'yaml[comments]' are explicitly ignored for
+the `settings/*.yml` files that may have been created.
+
+## Some rules explicitly ignored in code
+Some `# noqa ...` comment markers exist in the code to explicitly ignore
+certain rules, such as complaints that handlers should be used for actions
+that run because something has changed.
+
+
 # Future Enhancements
 
 TODO:

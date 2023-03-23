@@ -9,14 +9,14 @@
   ansible.builtin.copy:
     src: "{{ alp_image.cached }}"
     dest: "{{ alp_vm.image.backing }}"
-    mode: 0644
+    mode: "0644"
     remote_src: true
 
 - name: Create ignition config file
   ansible.builtin.template:
     src: "{{ alp_vm.ignition.template }}"
     dest: "{{ alp_vm.ignition.file }}"
-    mode: 0600
+    mode: "0600"
 
 - name: Create VM {{ alp_vm.name }}
   become: true

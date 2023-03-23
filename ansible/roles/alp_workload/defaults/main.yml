@@ -3,7 +3,7 @@
 _def_container:
   # podman pull registry.opensuse.org/suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads/gdm:latest
   name: "{{ workload.name }}"
-  registry:  registry.opensuse.org
+  registry: registry.opensuse.org
   path: suse/alp/workloads/tumbleweed_containerfiles/suse/alp/workloads
   version: latest
 
