@@ -19,13 +19,16 @@
       loop: "{{ stat_required_settings.results }}"
       loop_control:
         label: "{{ item.item }}"
+      when:
+        - not item.stat.exists
       register: copy_required_settings
 
     - name: Report if required settings files were created  # noqa no-handler
-      ansible.builtin.debug:
+      ansible.builtin.fail:
         msg: >-
           Required settings files have been setup.
-          Please customise as needed.
+          Please customise as needed and re-run this playbook to avail of
+          these changes.
       when:
         - copy_required_settings is changed
 
