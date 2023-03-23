@@ -31,11 +31,13 @@ $ bin/ansible-playbook ansible/test_env_create.yml
 ```
 
 Doing so will automatically setup the `vms.yml` and `vnets.yml` files
-under the `settings/` directory using the corresponding example files,
-and, all going well, should create a Libvirt managed ALP VM, called
-`alptestvm`, on the local system, with the Ansible workload for ALP
-installed, that you can log in to using the generated SSH config file,
-`ssh/config`, as follows:
+under the `settings/` directory using the corresponding example files
+and fail, asking you to re-run the playbook.
+
+When you re-run the playbook, as requested, it should create, all going
+well, a Libvirt managed ALP VM, called `alptestvm`, on the local system,
+with the Ansible workload for ALP installed, that you can log in to using
+the generated SSH config file, `ssh/config`, as follows:
 
 ```shell
 $ ssh -F ssh/config alptestvm
