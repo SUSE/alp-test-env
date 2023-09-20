@@ -1,29 +1,7 @@
 ---
 
-_alp_build_type: >-
-  {{ alp_build_type | default('build') }}
-
-_alp_image_type: >-
-  {{ alp_image_type | default('kvm') }}
-
-_alp_arch: >-
-  {{ alp_arch | default('x86_64') }}
-
-_alp_image_name: >-
-  {%- set _qcow2 = lookup('url',
-                          alp.image_base_urls[_alp_build_type],
-                          split_lines=True,
-                          wantlist=True) |
-                   select('match', '^ *<td *class="name".*[.]' ~ _alp_arch ~ '-.*' ~ _alp_image_type ~ '.*[.]qcow2"') |
-                   map('regex_replace', '^.*<td.*href="[.]/(.*[.]qcow2)".*', '\\1') |
-                   first -%}
-  {{- _qcow2 -}}
-
-_alp_image_url: >-
-  {{ alp.image_base_urls[_alp_build_type] ~ '/' ~ alp_image_name }}
-
 alp_image:
-  name: "{{ alp_image_name }}"
-  url: "{{ _alp_image_url }}"
-  cached: "{{ alp.cache.images }}/{{ alp_image_name }}"
-  checksum: "sha256:{{ _alp_image_url }}.sha256"
+  name: "ALP-Dolomite.x86_64-1.0-Default-qcow-Milestone3.qcow2"
+  url: "https://updates.suse.com/SUSE/Products/ALP-Dolomite/1.0/x86_64/ALP-Dolomite.x86_64-1.0-Default-qcow-Milestone4.qcow2"
+  cached: "{{ alp.cache.images }}/ALP-Dolomite.x86_64-1.0-Default-qcow-Milestone4.qcow2"
+  checksum: "sha256:https://updates.suse.com/SUSE/Products/ALP-Dolomite/1.0/x86_64/ALP-Dolomite.x86_64-1.0-Default-qcow-Milestone4.qcow2.sha256"
