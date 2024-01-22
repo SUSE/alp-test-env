@@ -3,17 +3,18 @@
 # Use a cache dir in /var/tmp to avoid path resolution issues
 # when switching between different users.
 alp_cache_dir: "{{ ['', 'var', 'tmp', 'alp'] | join('/') }}"
+_alp_arch: "{{ alp_arch | default('x86_64') }}"
 
 alp:
   image_base_urls:
-    build: https://download.opensuse.org/repositories/SUSE:/ALP/images/
-    snapshot: https://download.opensuse.org/repositories/SUSE:/ALP:/PUBLISH/images/
+    build: https://updates.suse.com/SUSE/Products/ALP-Dolomite/1.0/{{ _alp_arch }}/
+    snapshot: https://updates.suse.com/SUSE/Products/ALP-Dolomite/1.0/{{ _alp_arch }}/
   build_types:
     - build
     - snapshot
   image_types:
-    - kvm
-    - kvm_encrypted
+    - Default-encrypted
+    - Default
   cache:
     images: "{{ [alp_cache_dir, 'images'] | join('/') }}"
     workloads: "{{ [alp_cache_dir, 'workloads'] | join('/') }}"
