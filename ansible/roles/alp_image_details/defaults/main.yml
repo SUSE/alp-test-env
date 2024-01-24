@@ -1,11 +1,11 @@
 ---
-
 _alp_build_type: "{{ alp_build_type | default('build') }}"
-_alp_image_type: "{{ alp_image_type | default('Default') }}"
+_alp_image_type: "{{ alp_image_type | default('Default-qcow') }}"
 _alp_arch: "{{ alp_arch | default('x86_64') }}"
 _milestone: "Milestone{{ milestone }}"
+_extension: "{{ extension | default('qcow2') }}"
 
-_alp_image_name: "ALP-Dolomite.{{ _alp_arch }}-1.0-{{ _alp_image_type }}-qcow-{{ _milestone }}.qcow2"
+_alp_image_name: "ALP-Dolomite.{{ _alp_arch }}-1.0-{{ _alp_image_type }}-{{ _milestone }}.{{ _extension }}"
 
 _alp_image_url: "{{ alp.image_base_urls[_alp_build_type] | regex_replace('/$', '') }}/{{ _alp_image_name }}"
 
