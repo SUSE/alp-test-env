@@ -10,7 +10,6 @@
   ansible.builtin.get_url:
     dest: "{{ alp_image.cached }}"
     url: "{{ alp_image.url }}"
-    checksum: "{{ alp_image.checksum }}"
     mode: "0644"
   register: alp_image_download
 

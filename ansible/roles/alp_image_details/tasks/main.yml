@@ -3,6 +3,17 @@
 # Resolve dynamically calculated _alp_image_name when this role
 # is first loaded, so that we retain a consistent value for the
 # duration of an ansible-playbook run.
+- name: Fetch webpage and extract milestone number
+  ansible.builtin.uri:
+    url: https://susealp.io/downloads/
+    return_content: true
+  register: webpage_content
+
+- name: Extract milestone from webpage content
+  ansible.builtin.set_fact:
+    milestone: "{{ webpage_content.content | regex_findall('ALP Dolomite 1\\.0 Milestone (\\d+)', multiline=true) | first | int }}"
+  when: webpage_content.status == 200
+
 - name: Resolve alp_image_name
   ansible.builtin.set_fact:
     alp_image_name: "{{ _alp_image_name }}"

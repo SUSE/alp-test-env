@@ -13,6 +13,7 @@
     remote_src: true
 
 - name: Create ignition config file
+  become: true
   ansible.builtin.template:
     src: "{{ alp_vm.ignition.template }}"
     dest: "{{ alp_vm.ignition.file }}"
